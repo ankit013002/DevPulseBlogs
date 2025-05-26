@@ -1,22 +1,23 @@
-"use client";
+"use server";
 
 import { register } from "@/action/userRegister";
 import Link from "next/link";
-import React, { useActionState, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
+import { getUserFromCookie } from "@/lib/getUser";
+import { logout } from "@/action/userLogout";
 
-const Navbar = () => {
-  const [user, setUser] = useState({
-    username: "",
-    userImage: "",
-  });
-
-  const [userForm, userAction] = useActionState(register, {});
+export default async function Navbar() {
+  const user = await getUserFromCookie();
 
   return (
     <div className="navbar bg-primary shadow-sm rounded-full w-[90%] justify-self-center">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">DevPulse</a>
+        <Link
+          href={"/"}
+          className="btn bg-transparent border-none shadow-none text-xl text-[#fff]"
+        >
+          DevPulse
+        </Link>
       </div>
       <div className="flex flex-2 place-content-evenly ">
         <div className="flex justify-end flex-1 ">
@@ -24,7 +25,7 @@ const Navbar = () => {
             <FaPlus className="w-6 h-6 text-primary" />
           </button>
         </div>
-        {user.username ? (
+        {user ? (
           <div className="flex flex-1 justify-end">
             <input
               type="text"
@@ -57,8 +58,14 @@ const Navbar = () => {
                 <li className="bg-transparent hover:bg-[#2563eb]">
                   <a>Settings</a>
                 </li>
-                <li className="bg-transparent hover:bg-[#2563eb]">
-                  <a>Logout</a>
+                <li className="bg-transparent w-100% hover:bg-[#2563eb]">
+                  <button
+                    onClick={logout}
+                    type="submit"
+                    className="flex w-[100%]"
+                  >
+                    Log Out
+                  </button>
                 </li>
               </ul>
             </div>
@@ -76,6 +83,4 @@ const Navbar = () => {
       </div>
     </div>
   );
-};
-
-export default Navbar;
+}

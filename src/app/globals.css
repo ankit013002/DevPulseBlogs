@@ -10,11 +10,15 @@
   --background: #f5f7fa; /* very light gray */
   --foreground: #0f172a; /* almost-black navy */
 
+  --font: #f5f7fa;
+
   /* Primary & secondary accents */
-  --primary: #1e40af; /* deep indigo */
-  --primary-hover: #4338ca; /* brighter indigo on hover */
-  --secondary: #2563eb; /* vivid blue */
-  --secondary-hover: #3b82f6;
+  --color-primary: #1e40af; /* deep indigo */
+  --color-primary-hover: #4338ca; /* brighter indigo on hover */
+  --color-secondary: #2563eb; /* vivid blue */
+  --color-secondary-hover: #3b82f6;
+  --tertiary: #93c5fd; /* light blue */
+  --tertiary-hover: #60a5fa; /* slightly deeper blue on hover */
 
   /* Highlights & feedback */
   --accent: #f59e0b; /* amber */
@@ -25,6 +29,11 @@
   /* Surfaces */
   --muted: #e2e8f0; /* light gray for cards, code blocks */
   --border: #cbd5e1; /* gray border */
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
