@@ -1,25 +1,34 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+* {
+  box-sizing: border-box;
+}
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Core */
+  --background: #f5f7fa; /* very light gray */
+  --foreground: #0f172a; /* almost-black navy */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Primary & secondary accents */
+  --primary: #1e40af; /* deep indigo */
+  --primary-hover: #4338ca; /* brighter indigo on hover */
+  --secondary: #2563eb; /* vivid blue */
+  --secondary-hover: #3b82f6;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Highlights & feedback */
+  --accent: #f59e0b; /* amber */
+  --success: #16a34a; /* green */
+  --warning: #d97706; /* dark amber */
+  --error: #dc2626; /* red-600 */
+
+  /* Surfaces */
+  --muted: #e2e8f0; /* light gray for cards, code blocks */
+  --border: #cbd5e1; /* gray border */
 }
 
 body {
+  padding: 1%;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
