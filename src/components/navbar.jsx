@@ -19,14 +19,26 @@ export default async function Navbar() {
           DevPulse
         </Link>
       </div>
-      <div className="flex flex-2 place-content-evenly ">
-        <div className="flex justify-end flex-1 ">
-          <button className="btn p-0 bg-primary-content aspect-square rounded-full border-none">
-            <FaPlus className="w-6 h-6 text-primary" />
-          </button>
+      <div className="flex flex-2 mx-2 justify-end">
+        <div className="flex mx-[1%] justify-end">
+          {user ? (
+            <Link
+              href="/addArticle"
+              className="btn p-0 bg-primary-content aspect-square rounded-full border-none"
+            >
+              <FaPlus className="w-6 h-6 text-primary" />
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="btn p-0 bg-primary-content aspect-square rounded-full border-none"
+            >
+              <FaPlus className="w-6 h-6 text-primary" />
+            </Link>
+          )}
         </div>
         {user ? (
-          <div className="flex flex-1 justify-end">
+          <div className="flex text-primary justify-end">
             <input
               type="text"
               placeholder="Search"
@@ -71,7 +83,7 @@ export default async function Navbar() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-1 justify-center">
+          <div className="flex justify-end">
             <Link
               href="/login"
               className="btn bg-primary-content text-primary border-0"

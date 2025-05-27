@@ -9,7 +9,7 @@ const page = () => {
 
   return (
     <div className="flex justify-center items-center h-[100%]">
-      <div className="w-[30%] h-auto ">
+      <div className="w-[30%] text-primary h-auto ">
         <form
           action={userAction}
           className="fieldset bg-primary border-base-300 rounded-box  border p-5"
