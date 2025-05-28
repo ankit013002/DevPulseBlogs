@@ -1,6 +1,7 @@
 "use client";
 
 import { createArticle } from "@/action/createArticle";
+import Tiptap from "@/components/tiptap";
 import dynamic from "next/dynamic";
 import React, { useActionState, useState } from "react";
 const IoIosClose = dynamic(
@@ -78,7 +79,7 @@ const page = () => {
               </div>
             </div>
           </div>
-          <div className="flex my-[1%] items-center mx-5">
+          <div className="flex gap-2 items-center mx-5">
             {tags.map((item, index) => {
               return (
                 <div
@@ -93,9 +94,14 @@ const page = () => {
               );
             })}
           </div>
-          <button type="submit" className="btn my-5 btn-primary">
-            Submit
-          </button>
+          <div>
+            <Tiptap />
+          </div>
+          <div className="flex justify-center">
+            <button type="submit" className="btn w-[20%] my-5 btn-primary">
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     </div>
