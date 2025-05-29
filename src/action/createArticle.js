@@ -9,10 +9,19 @@ export const createArticle = async function (prevState, formData) {
 
   console.log(userId.userId);
 
+  const title = formData.get("title");
+  const link = title.replaceAll(/\s/g, "");
+  console.log(title);
+  console.log(typeof title);
+  console.log(link);
+
   const articleInfo = {
     userId: userId.userId,
     title: formData.get("title"),
+    link: link,
     author: formData.get("author"),
+    tags: formData.getAll("tags"),
+    description: formData.get("description"),
     content: formData.get("content"),
   };
 

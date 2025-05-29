@@ -1,178 +1,191 @@
 "use client";
 
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef } from "react";
 import {
   FaBold,
   FaItalic,
+  FaStrikethrough,
   FaHeading,
   FaListOl,
   FaListUl,
+  FaCode,
+  FaQuoteRight,
   FaImage,
   FaLink,
   FaUnlink,
+  FaUndo,
+  FaRedo,
 } from "react-icons/fa";
 
+const ToolbarButton = ({ onClick, title, isActive, disabled, children }) => (
+  <button
+    type="button"
+    title={title}
+    onClick={onClick}
+    disabled={disabled}
+    className={`p-2 rounded-md
+                hover:bg-slate-200 dark:hover:bg-slate-700
+                ${isActive ? "bg-slate-300 dark:bg-slate-600" : ""}
+                disabled:opacity-40`}
+  >
+    {children}
+  </button>
+);
+
 const Menubar = ({ editor }) => {
-  // 1) Call all hooks up front, before any conditional returns
   const fileInputRef = useRef(null);
-  const [dragActive, setDragActive] = useState(false);
-
-  const onDrop = useCallback(
-    (e) => {
-      e.preventDefault();
-      setDragActive(false);
-
-      const file = e.dataTransfer?.files?.[0];
-      if (file?.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          editor.chain().focus().setImage({ src: reader.result }).run();
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [editor]
-  );
-
-  const onDragOver = (e) => {
-    e.preventDefault();
-    setDragActive(true);
-  };
-
-  const onDragLeave = (e) => {
-    e.preventDefault();
-    setDragActive(false);
-  };
-
-  // 2) Safe to bail out now if `editor` is not ready
   if (!editor) return null;
 
-  // 3) All logic for buttons and rendering
-  const insertImageFromUrl = () => {
-    const url = window.prompt("Enter image URL");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
+  const openFileDialog = () => fileInputRef.current?.click();
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      editor.chain().focus().setImage({ src: reader.result }).run();
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
   };
 
-  const setLink = () => {
-    const url = window.prompt("Enter link URL");
-    if (url) {
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange("link")
-        .setLink({ href: url })
-        .run();
+  const addLink = () => {
+    const prevUrl = editor.getAttributes("link")?.href || "";
+    const url = window.prompt("Enter URL", prevUrl);
+
+    if (url === null) return;
+    if (url === "") {
+      editor.chain().focus().unsetLink().run();
+      return;
     }
+
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
+
+  const removeLink = () => editor.chain().focus().unsetLink().run();
 
   return (
-    <div
-      className={`relative flex flex-wrap gap-2 mb-4 p-2 border ${
-        dragActive ? "border-blue-400 bg-blue-50" : "border-transparent"
-      }`}
-      onDrop={onDrop}
-      onDragOver={onDragOver}
-      onDragLeave={onDragLeave}
-    >
-      {/* Formatting */}
-      <button
+    <div className="flex flex-wrap gap-1 mb-2 border rounded-md p-1 bg-slate-100 dark:bg-slate-800">
+      <ToolbarButton
+        title="Bold"
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`p-2 rounded ${
-          editor.isActive("bold") ? "bg-gray-300" : ""
-        }`}
+        isActive={editor.isActive("bold")}
       >
         <FaBold />
-      </button>
+      </ToolbarButton>
 
-      <button
+      <ToolbarButton
+        title="Italic"
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`p-2 rounded ${
-          editor.isActive("italic") ? "bg-gray-300" : ""
-        }`}
+        isActive={editor.isActive("italic")}
       >
         <FaItalic />
-      </button>
+      </ToolbarButton>
 
-      <button
+      <ToolbarButton
+        title="Strikethrough"
+        onClick={() => editor.chain().focus().toggleStrike().run()}
+        isActive={editor.isActive("strike")}
+      >
+        <FaStrikethrough />
+      </ToolbarButton>
+
+      {/* headings */}
+      <ToolbarButton
+        title="Heading 1"
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={`p-2 rounded ${
-          editor.isActive("heading", { level: 1 }) ? "bg-gray-300" : ""
-        }`}
+        isActive={editor.isActive("heading", { level: 1 })}
       >
-        <FaHeading />1
-      </button>
+        <div className="flex">
+          <FaHeading />
+          <span>1</span>
+        </div>
+      </ToolbarButton>
 
-      <button
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={`p-2 rounded ${
-          editor.isActive("orderedList") ? "bg-gray-300" : ""
-        }`}
+      <ToolbarButton
+        title="Heading 2"
+        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        isActive={editor.isActive("heading", { level: 2 })}
       >
-        <FaListOl />
-      </button>
+        <div className="flex">
+          <FaHeading />
+          <span>2</span>
+        </div>
+      </ToolbarButton>
 
-      <button
+      {/* lists */}
+      <ToolbarButton
+        title="Bullet list"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={`p-2 rounded ${
-          editor.isActive("bulletList") ? "bg-gray-300" : ""
-        }`}
+        isActive={editor.isActive("bulletList")}
       >
         <FaListUl />
-      </button>
+      </ToolbarButton>
 
-      {/* Links */}
-      <button
-        onClick={setLink}
-        className={`p-2 rounded ${
-          editor.isActive("link") ? "bg-gray-300" : ""
-        }`}
+      <ToolbarButton
+        title="Numbered list"
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        isActive={editor.isActive("orderedList")}
       >
+        <FaListOl />
+      </ToolbarButton>
+
+      {/* blocks */}
+      <ToolbarButton
+        title="Code block"
+        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+        isActive={editor.isActive("codeBlock")}
+      >
+        <FaCode />
+      </ToolbarButton>
+
+      <ToolbarButton
+        title="Blockquote"
+        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        isActive={editor.isActive("blockquote")}
+      >
+        <FaQuoteRight />
+      </ToolbarButton>
+
+      <ToolbarButton title="Add / Edit link" onClick={addLink}>
         <FaLink />
-      </button>
-      <button
-        onClick={() => editor.chain().focus().unsetLink().run()}
+      </ToolbarButton>
+
+      <ToolbarButton
+        title="Remove link"
+        onClick={removeLink}
         disabled={!editor.isActive("link")}
-        className="p-2 rounded"
       >
         <FaUnlink />
-      </button>
+      </ToolbarButton>
 
-      {/* Images */}
-      <button onClick={insertImageFromUrl} className="p-2 rounded">
+      <ToolbarButton title="Insert image" onClick={openFileDialog}>
         <FaImage />
-      </button>
-      <button
-        onClick={() => fileInputRef.current.click()}
-        className="p-2 rounded"
-      >
-        📁
-      </button>
+      </ToolbarButton>
       <input
         type="file"
         accept="image/*"
         ref={fileInputRef}
+        onChange={handleImageChange}
         className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-              editor.chain().focus().setImage({ src: reader.result }).run();
-            };
-            reader.readAsDataURL(file);
-          }
-          e.target.value = "";
-        }}
       />
 
-      {/* Drag overlay */}
-      {dragActive && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-blue-600 opacity-75">
-          Drop image here
-        </div>
-      )}
+      <ToolbarButton
+        title="Undo"
+        onClick={() => editor.chain().focus().undo().run()}
+        disabled={!editor.can().undo()}
+      >
+        <FaUndo />
+      </ToolbarButton>
+
+      <ToolbarButton
+        title="Redo"
+        onClick={() => editor.chain().focus().redo().run()}
+        disabled={!editor.can().redo()}
+      >
+        <FaRedo />
+      </ToolbarButton>
     </div>
   );
 };

@@ -2,6 +2,7 @@
 
 import { createArticle } from "@/action/createArticle";
 import Tiptap from "@/components/tiptap";
+import { redirect } from "next/navigation";
 import dynamic from "next/dynamic";
 import React, { useActionState, useState } from "react";
 const IoIosClose = dynamic(
@@ -29,6 +30,8 @@ const page = () => {
     });
   };
 
+  const [body, setBody] = useState("");
+
   return (
     <div className="w-[100%] flex">
       <div className="w-[100%]">
@@ -45,8 +48,14 @@ const page = () => {
               <input
                 name="title"
                 type="text"
+                onKeyDown={(e) => {
+                  if (e.key == "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+                onChange={(e) => e.preventDefault()}
                 className="input bg-primary-content text-primary"
-                placeholder="My Awesome Article"
+                placeholder="Article Title"
               />
             </div>
             <div className="mx-[1%]">
@@ -54,6 +63,11 @@ const page = () => {
               <input
                 name="author"
                 type="text"
+                onKeyDown={(e) => {
+                  if (e.key == "Enter") {
+                    e.preventDefault();
+                  }
+                }}
                 className="input bg-primary-content text-primary"
                 placeholder="Name"
               />
@@ -64,8 +78,12 @@ const page = () => {
                 <input
                   value={tagValue}
                   onChange={(e) => setTagValue(e.target.value)}
-                  name="Tags"
                   type="text"
+                  onKeyDown={(e) => {
+                    if (e.key == "Enter") {
+                      e.preventDefault();
+                    }
+                  }}
                   className="input w-auto bg-primary-content text-primary"
                   placeholder="Tag"
                 />
@@ -79,7 +97,17 @@ const page = () => {
               </div>
             </div>
           </div>
-          <div className="flex gap-2 items-center mx-5">
+          <input
+            name="tags"
+            onKeyDown={(e) => {
+              if (e.key == "Enter") {
+                e.preventDefault();
+              }
+            }}
+            type="hidden"
+            value={tags}
+          />
+          <div className="flex gap-2 items-center my-5 mx-5">
             {tags.map((item, index) => {
               return (
                 <div
@@ -94,11 +122,32 @@ const page = () => {
               );
             })}
           </div>
+          <div className="flex justify-center">
+            <div className="flex w-[100%] flex-col mx-[1%]">
+              <label className="label text-primary-content">Description</label>
+              <input
+                name="description"
+                type="text"
+                onKeyDown={(e) => {
+                  if (e.key == "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+                className="input w-[100%] bg-primary-content text-primary"
+                placeholder="Article Description"
+              />
+            </div>
+          </div>
+          <input name="content" type="hidden" value={body} />
           <div>
-            <Tiptap />
+            <Tiptap value={body} onChange={setBody} />
           </div>
           <div className="flex justify-center">
-            <button type="submit" className="btn w-[20%] my-5 btn-primary">
+            <button
+              onClick={() => redirect("/")}
+              type="submit"
+              className="btn w-[20%] my-5 btn-primary"
+            >
               Submit
             </button>
           </div>

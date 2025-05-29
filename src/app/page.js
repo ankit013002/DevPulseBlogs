@@ -9,9 +9,10 @@ export default async function Home() {
   return (
     <div className="mt-[1%] w-[100%] h-[100%]">
       {articles.map((article, index) => {
+        console.log(article.link);
         return (
           <div className="width-[100%]" key={index}>
-            <Link href="/">
+            <Link href={`/article/${article.link}`}>
               <ArticleCard cardInfo={article} />
             </Link>
           </div>

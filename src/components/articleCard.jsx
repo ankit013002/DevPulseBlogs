@@ -1,4 +1,5 @@
 import React from "react";
+import parse from "html-react-parser";
 
 const articleCard = ({ cardInfo }) => {
   return (
@@ -16,9 +17,15 @@ const articleCard = ({ cardInfo }) => {
             <div className="badge badge-secondary">NEW</div>
           </h2>
           <p>{cardInfo.author}</p>
+          <div>{cardInfo.description}</div>
           <div className="card-actions justify-end">
-            <div className="badge badge-outline">Fashion</div>
-            <div className="badge badge-outline">Products</div>
+            {cardInfo.tags.map((tag, index) => {
+              return (
+                <div key={index} className="badge badge-outline">
+                  {tag}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

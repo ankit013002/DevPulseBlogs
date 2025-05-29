@@ -8,3 +8,9 @@ export const getArticles = async function () {
   const articles = await cursor.toArray();
   return articles;
 };
+
+export const getArticleBySlug = async function (articleTitle) {
+  const articlesCollection = await getCollection("articles");
+  const article = await articlesCollection.findOne({ link: articleTitle });
+  return article;
+};
