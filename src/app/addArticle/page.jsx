@@ -97,25 +97,18 @@ const page = () => {
               </div>
             </div>
           </div>
-          <input
-            name="tags"
-            onKeyDown={(e) => {
-              if (e.key == "Enter") {
-                e.preventDefault();
-              }
-            }}
-            type="hidden"
-            value={tags}
-          />
+          {tags.map((tag, i) => (
+            <input key={i} name="tags" type="hidden" value={tag} />
+          ))}
           <div className="flex gap-2 items-center my-5 mx-5">
-            {tags.map((item, index) => {
+            {tags.map((tag, index) => {
               return (
                 <div
                   className="flex items-center bg-primary-content text-primary px-2 text-1.5x1 border-2 rounded-2xl"
                   key={index}
                 >
-                  {item}
-                  <button type="button" onClick={() => deleteTag(item)}>
+                  {tag}
+                  <button type="button" onClick={() => deleteTag(tag)}>
                     <IoIosClose />
                   </button>
                 </div>
