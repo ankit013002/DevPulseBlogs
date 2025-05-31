@@ -91,7 +91,6 @@ const Menubar = ({ editor }) => {
         <FaStrikethrough />
       </ToolbarButton>
 
-      {/* headings */}
       <ToolbarButton
         title="Heading 1"
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -114,7 +113,6 @@ const Menubar = ({ editor }) => {
         </div>
       </ToolbarButton>
 
-      {/* lists */}
       <ToolbarButton
         title="Bullet list"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -131,7 +129,6 @@ const Menubar = ({ editor }) => {
         <FaListOl />
       </ToolbarButton>
 
-      {/* blocks */}
       <ToolbarButton
         title="Code block"
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}

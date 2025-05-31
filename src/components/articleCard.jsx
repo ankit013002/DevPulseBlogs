@@ -1,13 +1,17 @@
 import React from "react";
 import parse from "html-react-parser";
+import { getBase64Image } from "@/action/getBase64Image";
 
-const articleCard = ({ cardInfo }) => {
+const articleCard = async ({ cardInfo }) => {
+  const articleCoverImage = await getBase64Image(cardInfo.coverImage);
+
   return (
     <div className="my-[1%] flex justify-center">
-      <div className="p-[1%] card bg-primary shadow-sm">
+      <div className="p-[1%] lg:max-w-[1250px] md:max-w-[850px] sm:max-w-[500px] lg:w-[75%] w-[75%] max-h-[600px] card bg-primary shadow-sm">
         <figure>
           <img
-            src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+            src={articleCoverImage}
+            className="w-full h-full object-cover object-top"
             alt="Shoes"
           />
         </figure>

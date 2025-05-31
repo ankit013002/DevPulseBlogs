@@ -2,18 +2,28 @@
 
 import { getCollection } from "@/lib/db";
 import { getUserFromCookie } from "@/lib/getUser";
+import { Binary } from "mongodb";
 import { cookies } from "next/headers";
 
 export const createArticle = async function (prevState, formData) {
   const userId = await getUserFromCookie();
 
-  console.log(userId.userId);
+  const coverImageFile = formData.get("coverImage");
+  let coverImage = null;
+
+  if (coverImageFile) {
+    const arrayBuffer = await coverImageFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    coverImage = {
+      data: new Binary(buffer),
+      filename: coverImageFile.name,
+      mimeType: coverImageFile.type,
+      size: buffer.length,
+    };
+  }
 
   const title = formData.get("title");
   const link = title.replaceAll(/\s/g, "");
-  console.log(title);
-  console.log(typeof title);
-  console.log(link);
 
   const articleInfo = {
     userId: userId.userId,
@@ -21,6 +31,7 @@ export const createArticle = async function (prevState, formData) {
     link: link,
     author: formData.get("author"),
     tags: formData.getAll("tags"),
+    coverImage: coverImage,
     description: formData.get("description"),
     content: formData.get("content"),
   };
