@@ -52,8 +52,8 @@ const page = () => {
           <legend className="fieldset-legend justify-center">
             Article details
           </legend>
-          <div className="flex flex-row">
-            <div className="flex flex-col w-[25%] mr-[1%] gap-5">
+          <div className="flex flex-col sm:flex-row">
+            <div className="flex flex-col w-full md:w-[25%] mr-[1%] gap-5">
               <div>
                 <label className="label text-primary-content">Title</label>
                 <input
@@ -182,7 +182,7 @@ const page = () => {
               </div>
             </div>
             <input name="content" type="hidden" value={body} />
-            <div className="w-[74%]">
+            <div className="w-full md:w-[74%]">
               <Tiptap value={body} onChange={setBody} />
             </div>
           </div>
