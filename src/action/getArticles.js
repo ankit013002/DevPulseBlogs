@@ -9,8 +9,17 @@ export const getArticles = async function () {
   return articles;
 };
 
-export const getArticleBySlug = async function (articleTitle) {
+export const getArticleBySlug = async function (articleLink) {
+  articleLink = articleLink.toLowerCase();
   const articlesCollection = await getCollection("articles");
-  const article = await articlesCollection.findOne({ link: articleTitle });
+  const article = await articlesCollection.findOne({ link: articleLink });
   return article;
+};
+
+export const getArticlesBySlug = async function (query) {
+  query = query.toLowerCase();
+  const articlesCollection = await getCollection("articles");
+  const cursor = await articlesCollection.find({ link: { $regex: query } });
+  const articles = await cursor.toArray();
+  return articles;
 };

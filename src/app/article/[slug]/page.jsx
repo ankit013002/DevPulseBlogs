@@ -1,43 +1,74 @@
-// app/article/[slug]/page.jsx
 "use server";
 
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getArticleBySlug } from "@/action/getArticles";
 import parse from "html-react-parser";
-/**
- * If you want ISR instead of full SSR on every request
- * export const revalidate = 60;            // 60-second cache
- */
+import Image from "next/image";
+import { getBase64Image } from "@/action/getBase64Image";
+import Link from "next/link";
+import { getUserFromCookie } from "@/lib/getUser";
+import { FaPencilAlt } from "react-icons/fa";
 
 export default async function ArticlePage({ params }) {
+  const user = await getUserFromCookie();
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-
-  if (!article) notFound(); // returns the 404 page
+  const articleCoverImage = await getBase64Image(article.coverImage);
+  if (!article) notFound();
 
   return (
-    <article className="mx-auto max-w-3xl py-12 px-4 prose dark:prose-invert">
-      {/* ---------- Header ---------- */}
+    <article className="py-12 px-4">
       <header className="mb-8">
-        <h1 className="mb-1">{article.title}</h1>
-        <p className="text-sm text-gray-500">
-          by {article.author}
-          {/*   • {new Date(article.createdAt).toLocaleDateString()}  */}
-        </p>
+        <div className="mb-8">
+          <div className="flex relative justify-center mb-1 text-6xl">
+            {article.title}
+            <div className="absolute right-0 text-sm flex flex-col">
+              <div>{`Created: ${article.date}`}</div>
+              {article?.updatedAt && (
+                <div>{`Updated: ${article.updatedAt}`}</div>
+              )}
+              {user.userId == article.userId && (
+                <div className="justify-items-end">
+                  <Link
+                    href={`/updateArticle/${article.link}`}
+                    className="btn flex bg-transparent border-none btn-square hover:bg-primary"
+                  >
+                    <FaPencilAlt />
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+          <p className="flex justify-center text-sm text-gray-500">
+            by {article.author}
+          </p>
+        </div>
+        {articleCoverImage && (
+          <div className="flex justify-center">
+            <img
+              src={articleCoverImage}
+              alt="Cover Image"
+              className="w-[75%]"
+            />
+          </div>
+        )}
 
         {/* Tags */}
-        {article.tags?.length > 0 && (
-          <ul className="mt-4 flex flex-wrap gap-2 text-xs">
-            {article.tags.map((t) => (
-              <li
-                key={t}
-                className="rounded-full bg-primary/10 px-3 py-1 text-primary"
-              >
-                {t}
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="flex justify-center">
+          {article.tags?.length > 0 && (
+            <ul className="mt-4 flex flex-wrap gap-2 text-xs">
+              {article.tags.map((tag) => (
+                <Link
+                  href={`/articles/${tag}`}
+                  key={tag}
+                  className="rounded-full bg-primary-content px-5 py-2 text-primary"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </ul>
+          )}
+        </div>
       </header>
 
       {/* ---------- Body (saved as HTML from TipTap) ---------- */}

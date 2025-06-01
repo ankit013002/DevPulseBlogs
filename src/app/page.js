@@ -1,22 +1,18 @@
-import { getArticles } from "@/action/getArticles";
-import Image from "next/image";
-import Link from "next/link";
-import ArticleCard from "@/components/articleCard";
+"use server";
+
+import ArticleCardsList from "@/components/articleCardsList";
+import SearchBar from "@/components/SearchBar";
 
 export default async function Home() {
-  const articles = await getArticles();
-
   return (
-    <div className="mt-[1%] w-[100%] h-[100%]">
-      {articles.map((article, index) => {
-        return (
-          <div className="width-[100%]" key={index}>
-            <Link href={`/article/${article.link}`}>
-              <ArticleCard cardInfo={article} />
-            </Link>
-          </div>
-        );
-      })}
+    <div>
+      <div className="flex flex-col gap-4 w-[50%] mx-auto justify-center  py-5">
+        <div className="text-7xl mx-auto justify-center">
+          Search for an Article!
+        </div>
+        <SearchBar />
+      </div>
+      <ArticleCardsList />
     </div>
   );
 }

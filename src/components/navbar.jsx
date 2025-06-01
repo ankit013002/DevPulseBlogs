@@ -5,9 +5,12 @@ import Link from "next/link";
 import { FaPlus } from "react-icons/fa6";
 import { getUserFromCookie } from "@/lib/getUser";
 import { logout } from "@/action/userLogout";
+import { redirect } from "next/navigation";
+import SearchBar from "./SearchBar";
 
 export default async function Navbar() {
   const user = await getUserFromCookie();
+  let query = "";
 
   return (
     <div className="navbar bg-primary shadow-sm rounded-full w-[90%] justify-self-center">
@@ -39,11 +42,9 @@ export default async function Navbar() {
         </div>
         {user ? (
           <div className="flex text-primary justify-end">
-            <input
-              type="text"
-              placeholder="Search"
-              className="input bg-primary-content input-bordered w-24 md:w-auto"
-            />
+            <div>
+              <SearchBar />
+            </div>
             <div className="dropdown dropdown-end">
               <div
                 tabIndex={0}
