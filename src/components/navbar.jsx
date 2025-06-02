@@ -40,11 +40,11 @@ export default async function Navbar() {
             </Link>
           )}
         </div>
+        <div>
+          <SearchBar />
+        </div>
         {user ? (
           <div className="flex text-primary justify-end">
-            <div>
-              <SearchBar />
-            </div>
             <div className="dropdown dropdown-end">
               <div
                 tabIndex={0}
@@ -63,10 +63,13 @@ export default async function Navbar() {
                 className="menu menu-sm dropdown-content bg-primary-content rounded-box z-1 mt-3 w-52 p-2 shadow"
               >
                 <li className="bg-transparent hover:bg-[#2563eb]">
-                  <a className="justify-between">
+                  <Link
+                    href={`/profile/${user.userId}`}
+                    className="justify-between"
+                  >
                     Profile
                     <span className="badge">New</span>
-                  </a>
+                  </Link>
                 </li>
                 <li className="bg-transparent hover:bg-[#2563eb]">
                   <a>Settings</a>

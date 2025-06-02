@@ -25,7 +25,7 @@ export const createArticle = async function (prevState, formData) {
   }
 
   const title = formData.get("title");
-  const link = title.replaceAll(/\s/g, "").toLowerCase();
+  const link = title.replaceAll(/[^a-zA-Z0-9]/g, "").toLowerCase();
 
   const date = new Date();
   const dateString = date.toDateString();
@@ -46,5 +46,4 @@ export const createArticle = async function (prevState, formData) {
   const articleId = articlesCollection.insertOne(articleInfo);
   revalidatePath("/");
   redirect("/");
-  return {};
 };

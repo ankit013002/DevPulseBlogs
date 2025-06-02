@@ -27,7 +27,7 @@ export default async function ArticlePage({ params }) {
               {article?.updatedAt && (
                 <div>{`Updated: ${article.updatedAt}`}</div>
               )}
-              {user.userId == article.userId && (
+              {user?.userId == article.userId && (
                 <div className="justify-items-end">
                   <Link
                     href={`/updateArticle/${article.link}`}

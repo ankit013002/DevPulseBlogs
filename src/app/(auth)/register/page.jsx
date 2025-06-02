@@ -14,7 +14,7 @@ const page = () => {
   }, [userState.success]);
 
   return (
-    <div className="flex justify-center items-center h-[100%]">
+    <div className="flex justify-center items-center h-[100%] text-primary">
       <div className="w-[30%] h-auto ">
         <form
           action={userAction}
