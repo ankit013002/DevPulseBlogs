@@ -10,15 +10,18 @@ const page = async function ({ params }) {
   const articles = await getArticlesByUser(slug);
   return (
     <div>
-      {articles.map((article, index) => {
-        return (
-          <div className="w-auto" key={index}>
-            <Link className="w-[100%]" href={`/article/${article.link}`}>
-              <ArticleCard cardInfo={article} />
-            </Link>
-          </div>
-        );
-      })}
+      <div>
+        <div className="justify-self-center">Your Articles</div>
+        {articles.map((article, index) => {
+          return (
+            <div className="w-auto" key={index}>
+              <Link className="w-auto" href={`/article/${article.link}`}>
+                <ArticleCard cardInfo={article} />
+              </Link>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

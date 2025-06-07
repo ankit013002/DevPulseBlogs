@@ -116,9 +116,28 @@ const ArticleForm = ({ article, requestType }) => {
               />
             </div>
             <div>
+              <label className="label text-primary-content">Description</label>
+              <input
+                name="description"
+                type="text"
+                value={description}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setDescription(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key == "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+                className="input w-[100%] bg-primary-content text-primary"
+                placeholder="Article Description"
+              />
+            </div>
+            <div>
               <label className="label text-primary-content">Tags</label>
               <div className="flex flex-col w-full">
-                <div>
+                <div className="flex">
                   <input
                     value={tagValue}
                     onChange={(e) => setTagValue(e.target.value)}
@@ -142,7 +161,7 @@ const ArticleForm = ({ article, requestType }) => {
                 {tags.map((tag, i) => (
                   <input key={i} name="tags" type="hidden" value={tag} />
                 ))}
-                <div className="flex gap-2 items-center my-5 mx-5">
+                <div className="flex gap-2 items-center mt-5 mx-5">
                   {tags.map((tag, index) => {
                     return (
                       <div
@@ -194,25 +213,6 @@ const ArticleForm = ({ article, requestType }) => {
                   className="hidden"
                 />
               </div>
-            </div>
-            <div>
-              <label className="label text-primary-content">Description</label>
-              <input
-                name="description"
-                type="text"
-                value={description}
-                onChange={(e) => {
-                  e.preventDefault();
-                  setDescription(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key == "Enter") {
-                    e.preventDefault();
-                  }
-                }}
-                className="input w-[100%] bg-primary-content text-primary"
-                placeholder="Article Description"
-              />
             </div>
           </div>
           <input name="content" type="hidden" value={body} />

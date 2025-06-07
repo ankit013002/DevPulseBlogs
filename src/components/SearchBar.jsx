@@ -10,7 +10,7 @@ const SearchBar = () => {
     <div>
       <div className="w-full justify-self-center">
         <div className="flex">
-          <label className="input w-full bg-primary-content rounded-none rounded-l-2xl text-primary">
+          <label className="border-2 border-primary input w-full bg-primary-content rounded-none rounded-l-2xl text-primary">
             <svg
               className="h-[1em] opacity-50"
               xmlns="http://www.w3.org/2000/svg"
@@ -38,7 +38,7 @@ const SearchBar = () => {
           </label>
           <button
             onClick={() => redirect(query ? `/articles/${query}` : "/")}
-            className="btn rounded-none rounded-r-2xl btn-primary"
+            className="btn rounded-none rounded-r-2xl btn-primary shadow-none hover:bg-primary-hover"
           >
             <svg
               className="h-[1em]"

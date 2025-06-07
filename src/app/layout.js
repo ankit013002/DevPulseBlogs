@@ -23,11 +23,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="">
+        <header>
           <Navbar />
         </header>
-        <div className="">{children}</div>
-        <footer className=" flex justify-self-center items-center">
+        <div className="h-full">{children}</div>
+        <footer className="flex mx-auto justify-center bg-primary w-full h-auto text-[#eceff1]">
           CopyRight @{new Date().getFullYear()}
         </footer>
       </body>

@@ -14,8 +14,8 @@ const page = () => {
   }, [userState.success]);
 
   return (
-    <div className="flex justify-center items-center h-[100%] text-primary">
-      <div className="w-[30%] h-auto ">
+    <div className="flex justify-center items-center text-primary h-[100vh]">
+      <div className="w-[30%]">
         <form
           action={userAction}
           className="fieldset bg-primary border-base-300 rounded-box  border p-5"

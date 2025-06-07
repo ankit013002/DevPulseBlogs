@@ -13,7 +13,7 @@ export default async function Navbar() {
   let query = "";
 
   return (
-    <div className="navbar bg-primary shadow-sm rounded-full w-[90%] justify-self-center">
+    <div className="navbar bg-primary shadow-sm w-full justify-self-center">
       <div className="flex-1">
         <Link
           href={"/"}
@@ -22,8 +22,8 @@ export default async function Navbar() {
           DevPulse
         </Link>
       </div>
-      <div className="flex flex-2 mx-2 justify-end">
-        <div className="flex mx-[1%] justify-end">
+      <div className="flex mx-2 space-x-10 justify-end">
+        <div className="flex">
           {user ? (
             <Link
               href="/addArticle"
@@ -40,7 +40,7 @@ export default async function Navbar() {
             </Link>
           )}
         </div>
-        <div>
+        <div className="hidden md:block">
           <SearchBar />
         </div>
         {user ? (

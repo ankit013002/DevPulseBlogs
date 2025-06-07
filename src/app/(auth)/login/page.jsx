@@ -8,7 +8,7 @@ const page = () => {
   const [userState, userAction] = useActionState(login, {});
 
   return (
-    <div className="flex justify-center items-center h-[100%]">
+    <div className="flex justify-center items-center h-[100vh]">
       <div className="w-[30%] text-primary h-auto ">
         <form
           action={userAction}

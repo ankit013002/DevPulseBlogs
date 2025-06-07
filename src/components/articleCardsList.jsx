@@ -12,9 +12,7 @@ const articleCardsList = async function () {
       {articles.map((article, index) => {
         return (
           <div className="w-auto" key={index}>
-            <Link className="w-[100%]" href={`/article/${article.link}`}>
-              <ArticleCard cardInfo={article} />
-            </Link>
+            <ArticleCard cardInfo={article} />
           </div>
         );
       })}
