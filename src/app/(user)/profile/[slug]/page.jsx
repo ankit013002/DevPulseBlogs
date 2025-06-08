@@ -1,26 +1,81 @@
 "use server";
 
-import { getArticlesByUser } from "@/action/getArticles";
+import { getArticlesByUserId } from "@/action/getArticles";
 import Link from "next/link";
 import React from "react";
 import ArticleCard from "@/components/articleCard";
+import { getUserInformationByUserName } from "@/action/getUserInformation";
+import { getBase64Image } from "@/action/getBase64Image";
+import Image from "next/image";
+import ProfileContentPagination from "@/components/profileContentPagination";
+import { serialize } from "mongodb";
 
 const page = async function ({ params }) {
   const { slug } = await params;
-  const articles = await getArticlesByUser(slug);
+  console.log(slug);
+  const user = await getUserInformationByUserName(slug);
+  const profilePic = await getBase64Image(user?.profilePicture);
+  console.log(user);
+  const articles = await getArticlesByUserId(user._id);
+  const serializedArticles = await Promise.all(
+    articles.map(async (article) => {
+      const coverImage = await getBase64Image(article.coverImage);
+      return {
+        userId: article.userId,
+        title: article.title,
+        link: article.link,
+        author: article.author,
+        date: article.date,
+        tags: article.tags,
+        coverImage: coverImage,
+        description: article.image,
+        updatedAt: article.updatedAt,
+      };
+    })
+  );
+
   return (
-    <div>
-      <div>
-        <div className="justify-self-center">Your Articles</div>
-        {articles.map((article, index) => {
-          return (
-            <div className="w-auto" key={index}>
-              <Link className="w-auto" href={`/article/${article.link}`}>
-                <ArticleCard cardInfo={article} />
-              </Link>
+    <div className="flex flex-col min-h-[100vh]">
+      <div className="flex flex-col p-[5%]">
+        <div className="flex mx-auto justify-center">
+          <div className="font-bold text-2xl md:text-6xl">{user.username}</div>
+        </div>
+        <div className="flex">
+          <Image
+            src={profilePic ?? "/default_pfp.png"}
+            alt="Profile Pic"
+            width={100}
+            height={100}
+            className="w-[80px] h-[80px] md:w-[360px] md:h-[360px] rounded-full"
+          />
+          <div className="flex flex-col w-full p-5 md:p-10">
+            <div className=" flex w-full justify-around">
+              <div>
+                <div className="md:text-3xl">Followers</div>
+                <div className="md:text-2xl  justify-self-center">
+                  {user.followers}
+                </div>
+              </div>
+              <div>
+                <div className="md:text-3xl">Following</div>
+                <div className="md:text-2xl justify-self-center">
+                  {user.following}
+                </div>
+              </div>
             </div>
-          );
-        })}
+            <div className="my-5">{user.firstName + " " + user.lastName}</div>
+            <div>
+              Software Engineer | Open Source Advocate | AI Enthusiast Breaking
+              down complex tech into digestible bites. I write about Python,
+              DevOps, and the occasional hot take on the future of AI.
+              Coffee-powered and terminal-driven ☕💻 Posts weekly. Opinions are
+              mine (and occasionally sarcastic).
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <ProfileContentPagination userArticles={serializedArticles} />
       </div>
     </div>
   );

@@ -4,15 +4,36 @@ import { getCollection } from "@/lib/db";
 import bcrypt from "bcrypt";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { Binary } from "mongodb";
 
 export const register = async function (prevState, formData) {
   // const usersCollection = await getCollection("users");
   // await usersCollection.insertOne({})
 
+  const profilePictureFile = formData.get("profilePicture");
+  let profilePicture = null;
+
+  if (profilePictureFile && profilePictureFile.size > 0) {
+    const arrayBuffer = await profilePictureFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    profilePicture = {
+      data: new Binary(buffer),
+      filename: profilePictureFile.name,
+      mimeType: profilePictureFile.type,
+      size: buffer.length,
+    };
+  }
+
   const user = {
     username: formData.get("username"),
     password: formData.get("password"),
+    firstName: formData.get("firstName"),
+    lastName: formData.get("lastName"),
+    profilePicture: profilePicture,
     email: formData.get("email"),
+    followers: 0,
+    following: 0,
+    likedArticles: [],
   };
 
   const error = {};

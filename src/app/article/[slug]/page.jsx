@@ -8,12 +8,15 @@ import { getBase64Image } from "@/action/getBase64Image";
 import Link from "next/link";
 import { getUserFromCookie } from "@/lib/getUser";
 import { FaPencilAlt } from "react-icons/fa";
+import { getUserInformationById } from "@/action/getUserInformation";
 
 export default async function ArticlePage({ params }) {
-  const user = await getUserFromCookie();
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   const articleCoverImage = await getBase64Image(article.coverImage);
+  const user = await getUserInformationById(article.userId);
+  const profilePicture = await getBase64Image(user.profilePicture);
+
   if (!article) notFound();
 
   return (
@@ -39,9 +42,25 @@ export default async function ArticlePage({ params }) {
               )}
             </div>
           </div>
-          <p className="flex justify-center text-sm text-gray-500">
-            by {article.author}
-          </p>
+
+          <div className="flex items-center justify-self-center space-x-4">
+            <p className="flex justify-center text-sm text-gray-500">by</p>
+            <Link
+              className="flex items-center bg-primary-content w-fit p-2 rounded-4xl"
+              href={`/profile/${user.username}`}
+            >
+              <Image
+                src={profilePicture}
+                alt="Profile Picture"
+                width={100}
+                height={100}
+                className="w-10 h-10 rounded-full"
+              />
+              <p className="px-2 text-primary">
+                {user?.firstName + " " + user?.lastName}
+              </p>
+            </Link>
+          </div>
         </div>
         {articleCoverImage && (
           <div className="flex justify-center">

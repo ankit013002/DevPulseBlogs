@@ -25,7 +25,9 @@ export const getArticlesBySlug = async function (query) {
   return articles;
 };
 
-export const getArticlesByUser = async function (userId) {
+export const getArticlesByUserId = async function (userId) {
+  userId = userId.toString();
+
   const articlesCollection = await getCollection("articles");
   const cursor = await articlesCollection.find({ userId: { $regex: userId } });
   const articles = await cursor.toArray();

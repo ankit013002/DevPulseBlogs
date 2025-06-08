@@ -1,17 +1,26 @@
 "use client";
 
 import { register } from "@/action/userRegister";
+import Image from "next/image";
 import { redirect } from "next/navigation";
-import React, { useActionState, useEffect } from "react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
+import { MdDriveFolderUpload } from "react-icons/md";
 
 const page = () => {
   const [userState, userAction] = useActionState(register, {});
+  const [profileImage, setProfileImage] = useState("");
+  const [profileImageUrl, setProfileImageUrl] = useState("");
+  const fileRef = useRef("");
 
   useEffect(() => {
     if (userState.success) {
       redirect("/");
     }
   }, [userState.success]);
+
+  const handleFileClick = () => {
+    fileRef.current?.click();
+  };
 
   return (
     <div className="flex justify-center items-center text-primary h-[100vh]">
@@ -23,7 +32,61 @@ const page = () => {
           <legend className="fieldset-legend justify-center text-2xl">
             Registration
           </legend>
-
+          <button
+            type="button"
+            onClick={handleFileClick}
+            className="justify-self-center w-25 h-25 bg-green-500 flex items-center rounded-full justify-center"
+          >
+            {profileImage ? (
+              <Image
+                src={`${profileImageUrl}`}
+                width={100}
+                height={100}
+                alt="Profile Image"
+                className="w-full h-full rounded-full object-fill object-center"
+              />
+            ) : (
+              <Image
+                src={`/default_pfp.png`}
+                width={100}
+                height={100}
+                alt="Profile Image"
+                className="rounded-full"
+              />
+            )}
+          </button>
+          <input
+            name="profilePicture"
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setProfileImage(file);
+                setProfileImageUrl(URL.createObjectURL(file));
+              }
+            }}
+            className="hidden"
+          />
+          <div className="flex justify-around">
+            <div className="flex flex-col">
+              <label className="label text-[#fff]">First Name</label>
+              <input
+                name="firstName"
+                className="input bg-primary-content w-auto"
+                placeholder="First Name"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="label text-[#fff]">Last Name</label>
+              <input
+                name="lastName"
+                className="input bg-primary-content w-auto"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
           <label className="label text-[#fff]">Username</label>
           <input
             name="username"

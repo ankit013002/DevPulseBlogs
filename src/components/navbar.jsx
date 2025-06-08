@@ -7,10 +7,14 @@ import { getUserFromCookie } from "@/lib/getUser";
 import { logout } from "@/action/userLogout";
 import { redirect } from "next/navigation";
 import SearchBar from "./SearchBar";
+import { getUserInformationById } from "@/action/getUserInformation";
+import { getBase64Image } from "@/action/getBase64Image";
+import Image from "next/image";
 
 export default async function Navbar() {
-  const user = await getUserFromCookie();
-  let query = "";
+  const userCookie = await getUserFromCookie();
+  const user = await getUserInformationById(userCookie?.userId);
+  const profilePic = await getBase64Image(user?.profilePicture);
 
   return (
     <div className="navbar bg-primary shadow-sm w-full justify-self-center">
@@ -52,10 +56,19 @@ export default async function Navbar() {
                 className="btn btn-ghost btn-circle avatar"
               >
                 <div className="w-10 rounded-full">
-                  <img
-                    alt="Tailwind CSS Navbar component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                  />
+                  {profilePic ? (
+                    <Image
+                      src={profilePic}
+                      alt="Profile Picture"
+                      width={100}
+                      height={100}
+                    />
+                  ) : (
+                    <img
+                      alt="Tailwind CSS Navbar component"
+                      src="/default_pfp.png"
+                    />
+                  )}
                 </div>
               </div>
               <ul
@@ -64,7 +77,7 @@ export default async function Navbar() {
               >
                 <li className="bg-transparent hover:bg-[#2563eb]">
                   <Link
-                    href={`/profile/${user.userId}`}
+                    href={`/profile/${user.username}`}
                     className="justify-between"
                   >
                     Profile
