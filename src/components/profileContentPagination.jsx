@@ -36,7 +36,7 @@ const profileContentPagination = ({ userArticles, likedArticles }) => {
             return (
               <div className="w-auto" key={index}>
                 <Link className="w-auto" href={`/article/${article.link}`}>
-                  <ArticleCard cardInfo={article} />
+                  <ArticleCard cardInfo={article} user={article.user} />
                 </Link>
               </div>
             );
@@ -52,7 +52,7 @@ const profileContentPagination = ({ userArticles, likedArticles }) => {
             return (
               <div className="w-auto" key={index}>
                 <Link className="w-auto" href={`/article/${article.link}`}>
-                  <ArticleCard cardInfo={article} />
+                  <ArticleCard cardInfo={article} user={article.user} />
                 </Link>
               </div>
             );
@@ -64,12 +64,12 @@ const profileContentPagination = ({ userArticles, likedArticles }) => {
           <div className="my-5 justify-self-center text-2xl font-bold">
             Your Articles
           </div>
-          {userArticles.map((article, index) => {
+          {likedArticles.map((article, index) => {
             return (
               <div className="w-auto" key={index}>
-                <Link className="w-auto" href={`/article/${article.link}`}>
-                  <ArticleCard cardInfo={article} />
-                </Link>
+                {/* <Link className="w-auto" href={`/article/${article.link}`}>
+                  <ArticleCard cardInfo={article} user={article.user} />
+                </Link> */}
               </div>
             );
           })}

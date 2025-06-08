@@ -4,7 +4,10 @@ import { getArticlesByUserId } from "@/action/getArticles";
 import Link from "next/link";
 import React from "react";
 import ArticleCard from "@/components/articleCard";
-import { getUserInformationByUserName } from "@/action/getUserInformation";
+import {
+  getUserInformationById,
+  getUserInformationByUserName,
+} from "@/action/getUserInformation";
 import { getBase64Image } from "@/action/getBase64Image";
 import Image from "next/image";
 import ProfileContentPagination from "@/components/profileContentPagination";
@@ -12,14 +15,14 @@ import { serialize } from "mongodb";
 
 const page = async function ({ params }) {
   const { slug } = await params;
-  console.log(slug);
   const user = await getUserInformationByUserName(slug);
   const profilePic = await getBase64Image(user?.profilePicture);
-  console.log(user);
   const articles = await getArticlesByUserId(user._id);
   const serializedArticles = await Promise.all(
     articles.map(async (article) => {
       const coverImage = await getBase64Image(article.coverImage);
+      const user = await getUserInformationById(article.userId);
+      const profilePicture = await getBase64Image(user.profilePicture);
       return {
         userId: article.userId,
         title: article.title,
@@ -30,6 +33,12 @@ const page = async function ({ params }) {
         coverImage: coverImage,
         description: article.image,
         updatedAt: article.updatedAt,
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          username: user.username,
+          profilePicture: profilePicture,
+        },
       };
     })
   );
@@ -75,7 +84,10 @@ const page = async function ({ params }) {
         </div>
       </div>
       <div>
-        <ProfileContentPagination userArticles={serializedArticles} />
+        <ProfileContentPagination
+          userArticles={serializedArticles}
+          likedArticles={serializedArticles}
+        />
       </div>
     </div>
   );
