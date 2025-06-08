@@ -1,9 +1,7 @@
 "use server";
 
 import { getArticlesByUserId } from "@/action/getArticles";
-import Link from "next/link";
 import React from "react";
-import ArticleCard from "@/components/articleCard";
 import {
   getUserInformationById,
   getUserInformationByUserName,
@@ -11,9 +9,16 @@ import {
 import { getBase64Image } from "@/action/getBase64Image";
 import Image from "next/image";
 import ProfileContentPagination from "@/components/profileContentPagination";
-import { serialize } from "mongodb";
+import { getUserFromCookie } from "@/lib/getUser";
+import FollowButton from "@/components/followButton";
+import { followUserAction } from "./followUserAction";
+import UnfollowButton from "@/components/unfollowButton";
+import { unfollowUserAction } from "./unfollowUserAction";
 
 const page = async function ({ params }) {
+  const currUserCookie = await getUserFromCookie();
+  const currUser = await getUserInformationById(currUserCookie.userId);
+
   const { slug } = await params;
   const user = await getUserInformationByUserName(slug);
   const profilePic = await getBase64Image(user?.profilePicture);
@@ -62,13 +67,13 @@ const page = async function ({ params }) {
               <div>
                 <div className="md:text-3xl">Followers</div>
                 <div className="md:text-2xl  justify-self-center">
-                  {user.followers}
+                  {user.followers.length}
                 </div>
               </div>
               <div>
                 <div className="md:text-3xl">Following</div>
                 <div className="md:text-2xl justify-self-center">
-                  {user.following}
+                  {user.following.length}
                 </div>
               </div>
             </div>
@@ -80,6 +85,24 @@ const page = async function ({ params }) {
               Coffee-powered and terminal-driven ☕💻 Posts weekly. Opinions are
               mine (and occasionally sarcastic).
             </div>
+            {currUser.username !== user.username &&
+              (currUser.following.includes(user.username) ? (
+                <div className="w-full h-full">
+                  <UnfollowButton
+                    followerUsername={currUser.username}
+                    followingUsername={user.username}
+                    action={unfollowUserAction}
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-full">
+                  <FollowButton
+                    followerUsername={currUser.username}
+                    followingUsername={user.username}
+                    action={followUserAction}
+                  />
+                </div>
+              ))}
           </div>
         </div>
       </div>

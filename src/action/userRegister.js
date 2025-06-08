@@ -31,8 +31,8 @@ export const register = async function (prevState, formData) {
     lastName: formData.get("lastName"),
     profilePicture: profilePicture,
     email: formData.get("email"),
-    followers: 0,
-    following: 0,
+    followers: [],
+    following: [],
     likedArticles: [],
   };
 

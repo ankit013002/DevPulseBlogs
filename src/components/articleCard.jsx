@@ -27,7 +27,7 @@ const articleCard = ({ cardInfo, user }) => {
           </div>
           <div className="flex items-center bg-primary-content w-fit p-2 rounded-4xl">
             <Image
-              src={user.profilePicture}
+              src={user?.profilePicture}
               alt="Profile Picture"
               width={100}
               height={100}
