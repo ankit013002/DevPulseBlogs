@@ -14,6 +14,7 @@ import FollowButton from "@/components/followButton";
 import { followUserAction } from "./followUserAction";
 import UnfollowButton from "@/components/unfollowButton";
 import { unfollowUserAction } from "./unfollowUserAction";
+import { getSerializedLikedArticles } from "./getSerializedLikedArticles";
 
 const page = async function ({ params }) {
   const currUserCookie = await getUserFromCookie();
@@ -46,6 +47,9 @@ const page = async function ({ params }) {
         },
       };
     })
+  );
+  const serializedLikedArticles = await getSerializedLikedArticles(
+    user.likedArticles
   );
 
   return (
@@ -109,7 +113,7 @@ const page = async function ({ params }) {
       <div>
         <ProfileContentPagination
           userArticles={serializedArticles}
-          likedArticles={serializedArticles}
+          likedArticles={serializedLikedArticles}
         />
       </div>
     </div>

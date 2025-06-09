@@ -48,7 +48,7 @@ const profileContentPagination = ({ userArticles, likedArticles }) => {
           <div className="my-5 justify-self-center text-2xl font-bold">
             Liked Articles
           </div>
-          {userArticles.map((article, index) => {
+          {likedArticles.map((article, index) => {
             return (
               <div className="w-auto" key={index}>
                 <Link className="w-auto" href={`/article/${article.link}`}>

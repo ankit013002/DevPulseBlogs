@@ -9,13 +9,18 @@ import Link from "next/link";
 import { getUserFromCookie } from "@/lib/getUser";
 import { FaPencilAlt } from "react-icons/fa";
 import { getUserInformationById } from "@/action/getUserInformation";
+import LikeButton from "@/components/likeButton";
+import { handleLikeArticleAction } from "../handleLikeArticleAction";
 
 export default async function ArticlePage({ params }) {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   const articleCoverImage = await getBase64Image(article.coverImage);
   const user = await getUserInformationById(article.userId);
+  const currUserCookie = await getUserFromCookie();
+  const currUser = await getUserInformationById(currUserCookie.userId);
   const profilePicture = await getBase64Image(user.profilePicture);
+  const isLikedArticle = await currUser.likedArticles.includes(article.link);
 
   if (!article) notFound();
 
@@ -24,6 +29,13 @@ export default async function ArticlePage({ params }) {
       <header className="mb-8">
         <div className="mb-8">
           <div className="flex relative justify-center mb-1 text-6xl">
+            <div className="absolute left-0">
+              <LikeButton
+                action={handleLikeArticleAction}
+                articleLink={article.link}
+                isLikedArticle={isLikedArticle}
+              />
+            </div>
             {article.title}
             <div className="absolute right-0 text-sm flex flex-col">
               <div>{`Created: ${article.date}`}</div>
