@@ -224,6 +224,15 @@ const ArticleForm = ({ article, requestType }) => {
           <input name="link" type="hidden" value={article.link} />
         )}
         <div className="flex gap-5 justify-center">
+          {requestType == "update" && (
+            <button
+              type="button"
+              onClick={() => redirect("/")}
+              className="btn w-[20%] btn-primary bg-gray-500 border-gray-500 hover:bg-gray-600 hover:border-gray-600"
+            >
+              Cancel
+            </button>
+          )}
           <button type="submit" className="btn w-[20%] btn-primary">
             {requestType === "submit" ? "Submit" : "Update"}
           </button>

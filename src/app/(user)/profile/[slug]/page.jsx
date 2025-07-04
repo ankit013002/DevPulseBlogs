@@ -37,7 +37,7 @@ const page = async function ({ params }) {
         date: article.date,
         tags: article.tags,
         coverImage: coverImage,
-        description: article.image,
+        description: article.description,
         updatedAt: article.updatedAt,
         user: {
           firstName: user.firstName,

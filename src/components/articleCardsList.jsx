@@ -37,15 +37,11 @@ const articleCardsList = async function () {
     <div className="mt-[1%]w-auto h-[100%]">
       {serializedArticles.map((article, index) => {
         return (
-          <Link
-            className="w-auto"
-            key={index}
-            href={`/article/${article.link}`}
-          >
+          <div className="w-auto" key={index} href={`/article/${article.link}`}>
             <div className="w-auto">
               <ArticleCard cardInfo={article} user={article.user} />
             </div>
-          </Link>
+          </div>
         );
       })}
     </div>

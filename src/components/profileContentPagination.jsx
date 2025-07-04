@@ -33,11 +33,10 @@ const profileContentPagination = ({ userArticles, likedArticles }) => {
             Your Articles
           </div>
           {userArticles.map((article, index) => {
+            console.log(article);
             return (
               <div className="w-auto" key={index}>
-                <Link className="w-auto" href={`/article/${article.link}`}>
-                  <ArticleCard cardInfo={article} user={article.user} />
-                </Link>
+                <ArticleCard cardInfo={article} user={article.user} />
               </div>
             );
           })}
@@ -51,9 +50,7 @@ const profileContentPagination = ({ userArticles, likedArticles }) => {
           {likedArticles.map((article, index) => {
             return (
               <div className="w-auto" key={index}>
-                <Link className="w-auto" href={`/article/${article.link}`}>
-                  <ArticleCard cardInfo={article} user={article.user} />
-                </Link>
+                <ArticleCard cardInfo={article} user={article.user} />
               </div>
             );
           })}

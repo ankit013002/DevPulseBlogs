@@ -37,13 +37,11 @@ const page = async function ({ params }) {
   );
 
   return (
-    <div className="mt-[1%] w-[100%] h-[100%]">
+    <div className="mt-[1%] w-[100%] min-h-[90vh]">
       {serializedArticles?.map((article, index) => {
         return (
           <div className="width-[100%]" key={index}>
-            <Link href={`/article/${article.link}`}>
-              <ArticleCard cardInfo={article} user={article.user} />
-            </Link>
+            <ArticleCard cardInfo={article} user={article.user} />
           </div>
         );
       })}

@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
           <Navbar />
         </header>
         <div className="h-full">{children}</div>
-        <footer className="flex mx-auto justify-center bg-primary w-full h-auto text-[#eceff1]">
+        <footer className="flex mx-auto justify-center bg-white w-full h-auto text-primary">
           CopyRight @{new Date().getFullYear()}
         </footer>
       </body>

@@ -1,6 +1,6 @@
 "use server";
 
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getArticleBySlug } from "@/action/getArticles";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -15,95 +15,113 @@ import { handleLikeArticleAction } from "../handleLikeArticleAction";
 export default async function ArticlePage({ params }) {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
+  if (!article) notFound();
+
   const articleCoverImage = await getBase64Image(article.coverImage);
   const user = await getUserInformationById(article.userId);
   const currUserCookie = await getUserFromCookie();
-  const currUser = await getUserInformationById(currUserCookie.userId);
+  const currUser = currUserCookie
+    ? await getUserInformationById(currUserCookie.userId)
+    : null;
   const profilePicture = await getBase64Image(user.profilePicture);
-  const isLikedArticle = await currUser.likedArticles.includes(article.link);
+  const isLikedArticle = currUser
+    ? currUser.likedArticles.includes(article.link)
+    : false;
 
-  if (!article) notFound();
+  const isAuthor = currUser && currUser._id.toString() === user._id.toString();
 
   return (
-    <article className="py-12 px-4">
-      <header className="mb-8">
-        <div className="mb-8">
-          <div className="flex relative justify-center mb-1 text-6xl">
-            <div className="absolute left-0">
-              <LikeButton
-                action={handleLikeArticleAction}
-                articleLink={article.link}
-                isLikedArticle={isLikedArticle}
-              />
-            </div>
-            {article.title}
-            <div className="absolute right-0 text-sm flex flex-col">
-              <div>{`Created: ${article.date}`}</div>
-              {article?.updatedAt && (
-                <div>{`Updated: ${article.updatedAt}`}</div>
-              )}
-              {user?.userId == article.userId && (
-                <div className="justify-items-end">
-                  <Link
-                    href={`/updateArticle/${article.link}`}
-                    className="btn flex bg-transparent border-none btn-square hover:bg-primary"
-                  >
-                    <FaPencilAlt />
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-self-center space-x-4">
-            <p className="flex justify-center text-sm text-gray-500">by</p>
+    <article className="max-w-3xl mx-auto py-12 px-4">
+      {/* Title & Actions */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-4xl font-extrabold tracking-tight">
+          {article.title}
+        </h1>
+        <div className="flex items-center space-x-2">
+          <LikeButton
+            action={handleLikeArticleAction}
+            articleLink={article.link}
+            isLikedArticle={isLikedArticle}
+          />
+          {isAuthor && (
             <Link
-              className="flex items-center bg-primary-content w-fit p-2 rounded-4xl"
-              href={`/profile/${user.username}`}
+              href={`/updateArticle/${article.link}`}
+              className="p-2 rounded hover:bg-gray-100"
+              aria-label="Edit article"
             >
-              <Image
-                src={profilePicture}
-                alt="Profile Picture"
-                width={100}
-                height={100}
-                className="w-10 h-10 rounded-full"
-              />
-              <p className="px-2 text-primary">
-                {user?.firstName + " " + user?.lastName}
-              </p>
+              <FaPencilAlt size={20} />
             </Link>
-          </div>
+          )}
         </div>
-        {articleCoverImage && (
-          <div className="flex justify-center">
-            <img
-              src={articleCoverImage}
-              alt="Cover Image"
-              className="w-[75%]"
-            />
-          </div>
-        )}
+      </div>
 
-        {/* Tags */}
-        <div className="flex justify-center">
-          {article.tags?.length > 0 && (
-            <ul className="mt-4 flex flex-wrap gap-2 text-xs">
-              {article.tags.map((tag) => (
+      {/* Meta */}
+      <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-8 text-gray-500 text-sm">
+        <div className="flex items-center space-x-2">
+          <span>By</span>
+          <Link
+            href={`/profile/${user.username}`}
+            className="flex items-center space-x-2"
+          >
+            <Image
+              src={profilePicture}
+              alt="Author avatar"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+            <span className="font-medium text-gray-700">
+              {user.firstName} {user.lastName}
+            </span>
+          </Link>
+        </div>
+        <div className="mt-2 sm:mt-0">
+          <time dateTime={article.date} className="block">
+            Published: {new Date(article.date).toLocaleDateString()}
+          </time>
+          {article.updatedAt && (
+            <time dateTime={article.updatedAt} className="block">
+              Updated: {new Date(article.updatedAt).toLocaleDateString()}
+            </time>
+          )}
+        </div>
+      </div>
+
+      {/* Cover Image */}
+      {articleCoverImage && (
+        <div className="mb-8">
+          <Image
+            src={articleCoverImage}
+            alt="Cover image"
+            width={1200}
+            height={675}
+            className="w-full h-auto rounded shadow-lg"
+          />
+        </div>
+      )}
+
+      {/* Tags */}
+      {article.tags?.length > 0 && (
+        <div className="mb-6">
+          <ul className="flex flex-wrap gap-2">
+            {article.tags.map((tag) => (
+              <li key={tag}>
                 <Link
                   href={`/articles/${tag}`}
-                  key={tag}
-                  className="rounded-full bg-primary-content px-5 py-2 text-primary"
+                  className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs hover:bg-gray-200"
                 >
                   {tag}
                 </Link>
-              ))}
-            </ul>
-          )}
+              </li>
+            ))}
+          </ul>
         </div>
-      </header>
+      )}
 
-      {/* ---------- Body (saved as HTML from TipTap) ---------- */}
-      <section>{parse(article.content)}</section>
+      {/* Content */}
+      <section className="prose lg:prose-lg mx-auto">
+        {parse(article.content)}
+      </section>
     </article>
   );
 }

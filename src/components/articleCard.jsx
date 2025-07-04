@@ -1,59 +1,81 @@
 "use client";
 
 import React from "react";
-import parse from "html-react-parser";
-import { getBase64Image } from "@/action/getBase64Image";
 import Link from "next/link";
 import Image from "next/image";
+import parse from "html-react-parser";
+import { format } from "date-fns";
 
-const articleCard = ({ cardInfo, user }) => {
+const ArticleCard = ({ cardInfo, user }) => {
+  const formattedDate = format(new Date(cardInfo.date), "MMMM d, yyyy");
+
   return (
-    <div className="my-[1%] w-auto flex justify-center">
-      <div className="p-[1%] lg:max-w-[1250px] md:max-w-[850px] sm:max-w-[500px] lg:w-[75%] w-[75%] max-h-[600px] card bg-primary shadow-sm">
-        {cardInfo.coverImage && (
-          <figure>
-            <img
-              src={cardInfo.coverImage}
-              className="w-full h-full object-cover object-top"
-              alt="Shoes"
-            />
-          </figure>
-        )}
-        <div className="card-body">
-          <div className="relative text-3xl card-title">
-            {cardInfo.title}
-            <div className="badge badge-secondary">NEW</div>
-            <div className="absolute right-0 text-sm">{cardInfo.date}</div>
-          </div>
-          <div className="flex items-center bg-primary-content w-fit p-2 rounded-4xl">
-            <Image
-              src={user?.profilePicture}
-              alt="Profile Picture"
-              width={100}
-              height={100}
-              className="w-10 h-10 rounded-full"
-            />
-            <p className="px-2 text-primary">
-              {user?.firstName + " " + user?.lastName}
-            </p>
-          </div>
-          <div>{cardInfo.description}</div>
-          <div className="card-actions justify-end">
-            {cardInfo.tags?.map((tag, index) => {
-              return (
-                <div
-                  key={tag}
-                  className="rounded-full bg-primary-content px-5 py-2 text-primary hover:bg-secondary"
+    <div className="w-full flex justify-center mx-auto">
+      <Link href={`/article/${cardInfo.link}`} className="w-4xl">
+        <article className="group block mx-auto my-6 bg-white shadow-md hover:shadow-lg transition-shadow duration-200 rounded-lg overflow-hidden">
+          {cardInfo.coverImage && (
+            <figure className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72">
+              <Image
+                src={cardInfo.coverImage}
+                alt={cardInfo.title}
+                fill
+                className="object-cover object-center"
+                priority={false}
+              />
+            </figure>
+          )}
+
+          <div className="p-6 flex flex-col md:flex-row md:justify-between">
+            <div className="md:w-3/4">
+              <header>
+                <h2 className="text-2xl font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                  {cardInfo.title}
+                </h2>
+                <time
+                  dateTime={cardInfo.date}
+                  className="block mt-1 text-sm text-gray-500"
                 >
-                  {tag}
-                </div>
-              );
-            })}
+                  {formattedDate}
+                </time>
+              </header>
+
+              <section className="mt-4 text-gray-700 prose prose-sm max-w-none">
+                {parse(cardInfo.description)}
+              </section>
+            </div>
+
+            <footer className="mt-6 md:mt-0 md:w-1/4 flex flex-col justify-between">
+              <div className="flex items-center">
+                {user.profilePicture && (
+                  <Image
+                    src={user.profilePicture}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                )}
+                <p className="ml-3 text-sm font-medium text-gray-800">
+                  {user.firstName} {user.lastName}
+                </p>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {cardInfo.tags?.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-block bg-primary/10 text-primary text-xs font-medium px-3 py-1 rounded-full transition-colors duration-150 hover:bg-primary/20"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </footer>
           </div>
-        </div>
-      </div>
+        </article>
+      </Link>
     </div>
   );
 };
 
-export default articleCard;
+export default ArticleCard;
