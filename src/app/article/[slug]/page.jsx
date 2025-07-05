@@ -46,7 +46,7 @@ export default async function ArticlePage({ params }) {
           {isAuthor && (
             <Link
               href={`/updateArticle/${article.link}`}
-              className="p-2 rounded hover:bg-gray-100"
+              className="p-2 rounded hover:bg-gray-500"
               aria-label="Edit article"
             >
               <FaPencilAlt size={20} />
@@ -58,7 +58,7 @@ export default async function ArticlePage({ params }) {
       {/* Meta */}
       <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-8 text-gray-500 text-sm">
         <div className="flex items-center space-x-2">
-          <span>By</span>
+          <span className="text-[var(--color-font)]">By</span>
           <Link
             href={`/profile/${user.username}`}
             className="flex items-center space-x-2"
@@ -70,7 +70,7 @@ export default async function ArticlePage({ params }) {
               height={40}
               className="rounded-full"
             />
-            <span className="font-medium text-gray-700">
+            <span className="font-medium text-[var(--color-font)]">
               {user.firstName} {user.lastName}
             </span>
           </Link>

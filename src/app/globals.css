@@ -7,32 +7,49 @@
   box-sizing: border-box;
 }
 
-.ProseMirror h1 {
-  @apply text-3xl font-bold my-4 text-black;
-}
-.ProseMirror h2 {
-  @apply text-2xl font-semibold my-3 text-black;
-}
-
-.ProseMirror ul {
-  @apply list-disc marker:text-black pl-5 my-2 text-black;
-}
-.ProseMirror ol {
-  @apply list-decimal marker:text-black pl-5 my-2 text-black;
-}
-.ProseMirror p {
-  @apply text-black;
+.prose {
+  --tw-prose-body: #374151;
+  --tw-prose-headings: #111827;
+  --tw-prose-links: #2563eb;
+  --tw-prose-bold: #111827;
+  --tw-prose-quote: #6b7280;
 }
 
-.ProseMirror a {
-  @apply text-primary;
+.dark .prose {
+  --tw-prose-body: #e5e7eb;
+  --tw-prose-headings: #f9fafb;
+  --tw-prose-links: #93c5fd;
+  --tw-prose-bold: #f9fafb;
+  --tw-prose-quote: #9ca3af;
+  --tw-prose-quote-border: #4b5563;
 }
 
-.ProseMirror blockquote {
-  @apply border-l-4 border-slate-300 pl-4 italic text-slate-600 my-3;
+.prose-invert {
+  --tw-prose-body: #e5e7eb;
+  --tw-prose-headings: #f9fafb;
+  --tw-prose-links: #93c5fd;
+  --tw-prose-bold: #f9fafb;
+  --tw-prose-quote: #9ca3af;
+  --tw-prose-quote-border: #4b5563;
+}
+
+.prose h1 {
+  color: var(--tw-prose-headings);
+}
+
+.prose strong {
+  color: var(--tw-prose-bold);
+}
+.prose a {
+  color: var(--tw-prose-links);
+}
+.prose blockquote {
+  color: var(--tw-prose-quote);
+  border-left-color: var(--tw-prose-quote-border);
 }
 
 :root {
+  --color-editor: #fff;
   --color-font: #1f2937;
   --color-primary: #1e40af; /* deep indigo */
   --color-primary-hover: #4338ca; /* brighter indigo on hover */
@@ -82,6 +99,7 @@
 }
 
 .dark {
+  --color-editor: #1f2937;
   --color-font: #e5e7eb;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
