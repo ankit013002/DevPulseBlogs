@@ -34,9 +34,8 @@ export default function RootLayout({ children }) {
             <Navbar />
           </header>
 
-          {children}
-
-          <footer className="flex mx-auto justify-center bg-white w-full h-auto text-primary">
+          <div className="min-h-[100vh]">{children}</div>
+          <footer className="flex mx-auto justify-center bg-accent w-full h-auto text-[var(--color-font)]">
             CopyRight @{new Date().getFullYear()}
           </footer>
         </ThemeProvider>

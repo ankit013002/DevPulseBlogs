@@ -70,15 +70,15 @@ const ArticleForm = ({ article, requestType }) => {
     <div>
       <form
         action={articleAction}
-        className="fieldset  border-transparent rounded-box w-[100%] flex flex-col border p-4"
+        className="fieldset  border-transparent rounded-box w-[100%] flex flex-col border p-4 "
       >
-        <legend className="fieldset-legend justify-center">
+        <legend className="fieldset-legend justify-center text-[var(--color-font)]">
           Article details
         </legend>
         <div className="flex flex-col sm:flex-row">
           <div className="flex flex-col w-full md:w-[25%] mr-[1%] gap-5">
             <div>
-              <label className="label text-primary-content">Title</label>
+              <label className="label text-[var(--color-font)]">Title</label>
               <input
                 name="title"
                 type="text"
@@ -97,7 +97,7 @@ const ArticleForm = ({ article, requestType }) => {
               />
             </div>
             <div>
-              <label className="label text-primary-content">Author</label>
+              <label className="label text-[var(--color-font)]">Author</label>
               <input
                 name="author"
                 type="text"
@@ -116,7 +116,9 @@ const ArticleForm = ({ article, requestType }) => {
               />
             </div>
             <div>
-              <label className="label text-primary-content">Description</label>
+              <label className="label text-[var(--color-font)]">
+                Description
+              </label>
               <input
                 name="description"
                 type="text"
@@ -135,7 +137,7 @@ const ArticleForm = ({ article, requestType }) => {
               />
             </div>
             <div>
-              <label className="label text-primary-content">Tags</label>
+              <label className="label text-[var(--color-font)]">Tags</label>
               <div className="flex flex-col w-full">
                 <div className="flex">
                   <input
@@ -179,7 +181,9 @@ const ArticleForm = ({ article, requestType }) => {
               </div>
             </div>
             <div>
-              <label>Article Cover Image</label>
+              <label className="text-[var(--color-font)]">
+                Article Cover Image
+              </label>
               <div className="flex items-center justify-center  aspect-square border-primary border-2">
                 <button
                   type="button"

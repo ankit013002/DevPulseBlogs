@@ -66,7 +66,7 @@ const Menubar = ({ editor }) => {
   const removeLink = () => editor.chain().focus().unsetLink().run();
 
   return (
-    <div className="flex flex-wrap gap-1 mb-2 border rounded-md p-1 bg-slate-100 dark:bg-slate-800">
+    <div className="flex flex-wrap gap-1 mb-2 border rounded-md p-1 dark:bg-slate-500">
       <ToolbarButton
         title="Bold"
         onClick={() => editor.chain().focus().toggleBold().run()}
@@ -130,8 +130,14 @@ const Menubar = ({ editor }) => {
       </ToolbarButton>
 
       <ToolbarButton
-        title="Code block"
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+        title={editor.isActive("codeBlock") ? "Exit code block" : "Code block"}
+        onClick={() => {
+          if (editor.isActive("codeBlock")) {
+            editor.chain().focus().exitCode().run();
+          } else {
+            editor.chain().focus().toggleCodeBlock().run();
+          }
+        }}
         isActive={editor.isActive("codeBlock")}
       >
         <FaCode />

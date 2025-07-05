@@ -1,18 +1,39 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 @plugin "daisyui";
 
 * {
   box-sizing: border-box;
 }
 
+.ProseMirror h1 {
+  @apply text-3xl font-bold my-4 text-black;
+}
+.ProseMirror h2 {
+  @apply text-2xl font-semibold my-3 text-black;
+}
+
+.ProseMirror ul {
+  @apply list-disc marker:text-black pl-5 my-2 text-black;
+}
+.ProseMirror ol {
+  @apply list-decimal marker:text-black pl-5 my-2 text-black;
+}
+.ProseMirror p {
+  @apply text-black;
+}
+
+.ProseMirror a {
+  @apply text-primary;
+}
+
+.ProseMirror blockquote {
+  @apply border-l-4 border-slate-300 pl-4 italic text-slate-600 my-3;
+}
+
 :root {
-  /* Core */
-  /* --foreground: #0f172a; 
-
-  --font: #f5f7fa;
-
-  /* Primary & secondary accents */
+  --color-font: #1f2937;
   --color-primary: #1e40af; /* deep indigo */
   --color-primary-hover: #4338ca; /* brighter indigo on hover */
   --color-secondary: #2563eb; /* vivid blue */
@@ -36,7 +57,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: #1e40af;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -61,13 +82,14 @@
 }
 
 .dark {
+  --color-font: #e5e7eb;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: #1e40af;
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);

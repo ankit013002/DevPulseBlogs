@@ -8,7 +8,7 @@ const SearchBar = () => {
 
   return (
     <div>
-      <div className="w-full justify-self-center">
+      <div className="w-full max-w-[800px] justify-self-center">
         <div className="flex">
           <label className="border-0 border-primary input w-full bg-primary-content rounded-none rounded-l-2xl text-primary">
             <svg

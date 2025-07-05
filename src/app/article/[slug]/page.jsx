@@ -119,7 +119,7 @@ export default async function ArticlePage({ params }) {
       )}
 
       {/* Content */}
-      <section className="prose lg:prose-lg mx-auto">
+      <section className="prose text-[var(--color-font)] lg:prose-lg mx-auto">
         {parse(article.content)}
       </section>
     </article>

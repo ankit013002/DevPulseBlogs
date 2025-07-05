@@ -18,12 +18,12 @@ export default async function Navbar() {
   const profilePic = user ? await getBase64Image(user.profilePicture) : null;
 
   return (
-    <nav className="shadow-sm">
+    <nav className="shadow-sm bg-accent">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="text-2xl font-bold">
-              <span className="text-gray-800">Dev</span>
+              <span className="text-[var(--color-font)]">Dev</span>
               <span className="text-primary">Pulse</span>
             </Link>
           </div>
@@ -99,7 +99,7 @@ export default async function Navbar() {
               <div className="flex justify-end">
                 <Link
                   href="/login"
-                  className="btn bg-primary-content text-primary border-0"
+                  className="btn bg-primary text-primary-content border-0"
                 >
                   Register/Log-In
                 </Link>

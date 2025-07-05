@@ -12,7 +12,7 @@ const ArticleCard = ({ cardInfo, user }) => {
   return (
     <div className="w-full flex justify-center mx-auto">
       <Link href={`/article/${cardInfo.link}`} className="w-4xl">
-        <article className="group block mx-auto my-6 bg-white shadow-md hover:shadow-lg transition-shadow duration-200 rounded-lg overflow-hidden">
+        <article className="group block mx-auto my-6 bg-transparent shadow-md hover:shadow-lg transition-shadow duration-200 rounded-lg overflow-hidden">
           {cardInfo.coverImage && (
             <figure className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72">
               <Image
@@ -25,10 +25,10 @@ const ArticleCard = ({ cardInfo, user }) => {
             </figure>
           )}
 
-          <div className="p-6 flex flex-col md:flex-row md:justify-between">
+          <div className="p-6 flex flex-col md:flex-row md:justify-between bg-accent">
             <div className="md:w-3/4">
               <header>
-                <h2 className="text-2xl font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                <h2 className="text-2xl text-[var(--color-font)] font-semibold group-hover:text-primary transition-colors">
                   {cardInfo.title}
                 </h2>
                 <time
@@ -39,7 +39,7 @@ const ArticleCard = ({ cardInfo, user }) => {
                 </time>
               </header>
 
-              <section className="mt-4 text-gray-700 prose prose-sm max-w-none">
+              <section className="mt-4 text-[var(--color-font)] prose prose-sm max-w-none">
                 {parse(cardInfo.description)}
               </section>
             </div>
@@ -55,7 +55,7 @@ const ArticleCard = ({ cardInfo, user }) => {
                     className="rounded-full"
                   />
                 )}
-                <p className="ml-3 text-sm font-medium text-gray-800">
+                <p className="ml-3 text-sm font-medium text-[var(--color-font)]">
                   {user.firstName} {user.lastName}
                 </p>
               </div>

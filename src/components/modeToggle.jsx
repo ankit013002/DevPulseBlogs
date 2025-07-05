@@ -15,6 +15,7 @@ import {
 export function ModeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const [mounted, setMounted] = React.useState(false);
 
   return (
     <DropdownMenu>
@@ -23,12 +24,12 @@ export function ModeToggle() {
           {isDark ? (
             <Moon className="h-[1.2rem] w-[1.2rem]" />
           ) : (
-            <Sun className="h-[1.2rem] w-[1.2rem]" />
+            <Sun className="h-[1.2rem] w-[1.2rem] text-primary" />
           )}
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-red-500">
+      <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
         </DropdownMenuItem>

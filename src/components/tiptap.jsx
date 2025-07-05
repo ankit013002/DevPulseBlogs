@@ -26,8 +26,7 @@ const Tiptap = ({ value, onChange }) => {
     ],
     editorProps: {
       attributes: {
-        class:
-          "min-h-[680px] h-full border rounded-md bg-slate-50 py-2 px-3 text-primary",
+        class: "min-h-[680px] h-full border rounded-md bg-slate-50 py-2 px-3",
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -36,7 +35,9 @@ const Tiptap = ({ value, onChange }) => {
   return (
     <>
       <Menubar editor={editor} />
-      <EditorContent editor={editor} />
+      <div className="prose dark:prose-invert max-w-none">
+        <EditorContent editor={editor} />
+      </div>
     </>
   );
 };
