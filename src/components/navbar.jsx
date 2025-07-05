@@ -8,6 +8,7 @@ import { getBase64Image } from "@/action/getBase64Image";
 import { logout } from "@/action/userLogout";
 import SearchBar from "./SearchBar";
 import Image from "next/image";
+import { ModeToggle } from "./modeToggle";
 
 export default async function Navbar() {
   const userCookie = await getUserFromCookie();
@@ -17,7 +18,7 @@ export default async function Navbar() {
   const profilePic = user ? await getBase64Image(user.profilePicture) : null;
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="shadow-sm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -39,6 +40,8 @@ export default async function Navbar() {
             >
               <FaPlus className="h-5 w-5 text-primary" />
             </Link>
+
+            <ModeToggle />
 
             {user ? (
               <div className="flex text-primary justify-end">
