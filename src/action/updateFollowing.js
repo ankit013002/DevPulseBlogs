@@ -52,14 +52,6 @@ export const updateUnfollowing = async function (
   const followingUser = await getUserInformationByUserName(followingUsername);
   const followerUser = await getUserInformationByUserName(followerUsername);
 
-  console.log("user: " + followingUser.username);
-  console.log("followers: " + followingUser.followers);
-  console.log("following: " + followingUser.following);
-
-  console.log("user: " + followerUser.username);
-  console.log("followers: " + followerUser.followers);
-  console.log("following: " + followerUser.following);
-
   const followingUserNewFollowers = followingUser.followers.filter(
     (follower) => follower !== followerUser.username
   );

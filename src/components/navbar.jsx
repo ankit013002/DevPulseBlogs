@@ -41,7 +41,7 @@ export default async function Navbar() {
               <FaPlus className="h-5 w-5 text-primary" />
             </Link>
 
-            <ModeToggle suppressHydrationWarning />
+            <ModeToggle />
 
             {user ? (
               <div className="flex text-primary justify-end">
@@ -80,7 +80,9 @@ export default async function Navbar() {
                       </Link>
                     </li>
                     <li className="bg-transparent hover:bg-[#2563eb]">
-                      <a>Settings</a>
+                      <Link href={`/settings`} className="justify-between">
+                        Settings
+                      </Link>
                     </li>
                     <li className="bg-transparent w-100% hover:bg-[#2563eb]">
                       <button

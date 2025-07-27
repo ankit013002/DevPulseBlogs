@@ -33,7 +33,6 @@ const profileContentPagination = ({ userArticles, likedArticles }) => {
             Your Articles
           </div>
           {userArticles.map((article, index) => {
-            console.log(article);
             return (
               <div className="w-auto" key={index}>
                 <ArticleCard cardInfo={article} user={article.user} />

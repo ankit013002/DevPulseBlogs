@@ -8,7 +8,6 @@ import { revalidatePath } from "next/cache";
 export const updateUserLikedArticles = async function (articleLink) {
   const userCookie = await getUserFromCookie();
   const user = await getUserInformationById(userCookie.userId);
-  console.log("User: " + user.username + ", Article Link: " + articleLink);
   const usersCollection = await getCollection("users");
 
   user.likedArticles.includes(articleLink)

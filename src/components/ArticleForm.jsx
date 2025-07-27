@@ -23,6 +23,9 @@ const ArticleForm = ({ article, requestType }) => {
   const [body, setBody] = useState(article?.content ? article.content : "");
   const [coverImage, setCoverImage] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [tagCountTooLarge, setTagCountTooLarge] = useState(false);
+  const [tags, setTags] = useState(article?.tags ? article.tags : []);
+  const [tagValue, setTagValue] = useState("");
 
   useEffect(() => {
     setTitle(article?.title || "");
@@ -31,6 +34,14 @@ const ArticleForm = ({ article, requestType }) => {
     setCoverImage(article?.coverImage || "");
     setCoverImageUrl(article?.coverImage || "");
   }, []);
+
+  useEffect(() => {
+    if (tags.length >= 3) {
+      setTagCountTooLarge(true);
+    } else {
+      setTagCountTooLarge(false);
+    }
+  }, [tags]);
 
   const [articleState, articleAction] = useActionState(
     requestType === "submit" ? createArticle : updateArticle,
@@ -41,9 +52,6 @@ const ArticleForm = ({ article, requestType }) => {
     deleteArticle,
     {}
   );
-
-  const [tags, setTags] = useState(article?.tags ? article.tags : []);
-  const [tagValue, setTagValue] = useState("");
 
   const fileRef = useRef();
 
@@ -152,13 +160,15 @@ const ArticleForm = ({ article, requestType }) => {
                     className="input bg-primary-content rounded-none rounded-l-sm text-primary"
                     placeholder="Tag"
                   />
-                  <button
-                    type="button"
-                    onClick={() => addTag()}
-                    className="btn w-auto rounded-none rounded-r-sm btn-primary"
-                  >
-                    +
-                  </button>
+                  {!tagCountTooLarge && (
+                    <button
+                      type="button"
+                      onClick={() => addTag()}
+                      className="btn w-auto rounded-none rounded-r-sm btn-primary"
+                    >
+                      +
+                    </button>
+                  )}
                 </div>
                 {tags.map((tag, i) => (
                   <input key={i} name="tags" type="hidden" value={tag} />
