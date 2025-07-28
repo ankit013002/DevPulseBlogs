@@ -24,10 +24,10 @@ const page = () => {
 
   return (
     <div className="flex justify-center items-center text-primary h-[100vh]">
-      <div className="w-[30%]">
+      <div className="s:w-[50%] lg:w-[40%] xl:w-[30%] max-w-[800px]">
         <form
           action={userAction}
-          className="fieldset bg-primary border-base-300 rounded-box  border p-5"
+          className="fieldset bg-primary border-base-300 rounded-box border p-5"
         >
           <legend className="fieldset-legend justify-center text-2xl">
             Registration

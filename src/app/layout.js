@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,8 +36,42 @@ export default function RootLayout({ children }) {
           </header>
 
           <div className="min-h-[100vh]">{children}</div>
-          <footer className="flex mx-auto justify-center bg-accent w-full h-auto text-[var(--color-font)]">
-            CopyRight @{new Date().getFullYear()}
+          <footer className="relative overflow-hidden bg-gradient-to-r from-primary to-secondary text-white">
+            <div className="absolute inset-0 bg-black/20"></div>
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+              <div className="flex items-center gap-x-10 mb-6 md:mb-0 text-center md:text-left">
+                <Link
+                  href="/"
+                  className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                >
+                  DevPulse
+                </Link>
+                <p className="mt-2 text-sm max-w-xs">
+                  Where developers share insights, innovations, and the pulse of
+                  modern software.
+                </p>
+              </div>
+
+              <nav className="flex space-x-6 mb-6 md:mb-0">
+                <Link href="/articles" className="hover:underline">
+                  Articles
+                </Link>
+                <Link href={"/login"} className="hover:underline">
+                  Write
+                </Link>
+                <Link href="/about" className="hover:underline">
+                  About
+                </Link>
+                <Link href="/login" className="hover:underline">
+                  Login
+                </Link>
+              </nav>
+
+              <div className="text-sm">
+                &copy; {new Date().getFullYear()} DevPulse. All rights reserved.
+              </div>
+            </div>
           </footer>
         </ThemeProvider>
       </body>

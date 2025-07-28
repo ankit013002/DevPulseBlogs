@@ -49,6 +49,7 @@
 }
 
 :root {
+  --gradient-end: #fff;
   --color-editor: #fff;
   --color-font: #1f2937;
   --color-primary: #1e40af; /* deep indigo */
@@ -99,6 +100,7 @@
 }
 
 .dark {
+  --gradient-end: #000;
   --color-editor: #1f2937;
   --color-font: #e5e7eb;
   --background: oklch(0.145 0 0);
