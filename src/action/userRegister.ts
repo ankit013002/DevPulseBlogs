@@ -9,7 +9,7 @@ import type { UserDocument, RegisterState, ImageData } from "@/types";
 
 export const register = async function (
   _prevState: RegisterState,
-  formData: FormData
+  formData: FormData,
 ): Promise<RegisterState> {
   const profilePictureFile = formData.get("profilePicture") as File | null;
   let profilePicture: ImageData | null = null;
@@ -64,14 +64,12 @@ export const register = async function (
   };
 
   const userCollection = await getCollection<UserDocument>("users");
-  const userData = await userCollection.insertOne(
-    user as UserDocument
-  );
+  const userData = await userCollection.insertOne(user as UserDocument);
   const userId = userData.insertedId.toString();
 
   const token = jwt.sign(
     { userId, exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24) },
-    process.env.JWTSECRET as string
+    process.env.JWTSECRET as string,
   );
 
   const cookieStore = await cookies();
@@ -79,7 +77,7 @@ export const register = async function (
     httpOnly: true,
     sameSite: "strict",
     maxAge: 60 * 60 * 24,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
   });
 
   return { success: true };

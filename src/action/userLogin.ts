@@ -9,7 +9,7 @@ import type { UserDocument, LoginState } from "@/types";
 
 export const login = async function (
   _prevState: LoginState,
-  formData: FormData
+  formData: FormData,
 ): Promise<LoginState> {
   const user = {
     email: formData.get("email") as string,
@@ -34,7 +34,7 @@ export const login = async function (
       userId: userData._id,
       exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24),
     },
-    process.env.JWTSECRET as string
+    process.env.JWTSECRET as string,
   );
 
   const cookie = await cookies();
@@ -42,7 +42,7 @@ export const login = async function (
     httpOnly: true,
     sameSite: "strict",
     maxAge: 60 * 60 * 24,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
   });
 
   redirect("/");
