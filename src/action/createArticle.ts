@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { ArticleDocument, ImageData } from "@/types";
 import { ArticleInputSchema } from "@/lib/schemas";
+import { ZodError } from "zod";
 
 export const createArticle = async function (
   _prevState: object,
@@ -48,10 +49,10 @@ export const createArticle = async function (
   try {
     ArticleInputSchema.parse(articleInfo);
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
+    if (error instanceof ZodError) {
+      throw new Error(error.issues[0].message);
     }
-    throw new Error("An unknown error occurred during validation.");
+    throw new Error("Validation failed");
   }
 
   const articlesCollection = await getCollection<ArticleDocument>("articles");

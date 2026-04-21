@@ -1,5 +1,10 @@
-import { Binary, ObjectId } from "mongodb";
+import { Binary } from "mongodb";
 import { z } from "zod";
+
+export const LoginInputSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+});
 
 export const UserInputSchema = z.object({
   username: z
@@ -51,8 +56,7 @@ export const ArticleInputSchema = z.object({
 });
 
 export const UserSchema = UserInputSchema.extend({
-  _id: z.instanceof(ObjectId),
-  password: z.string(),
+  password: z.string(), // stored as hash
   followers: z.array(z.string()),
   following: z.array(z.string()),
   likedArticles: z.array(z.string()),
@@ -60,7 +64,6 @@ export const UserSchema = UserInputSchema.extend({
 });
 
 export const ArticleSchema = ArticleInputSchema.extend({
-  _id: z.instanceof(ObjectId),
   userId: z.string(),
   link: z
     .string()

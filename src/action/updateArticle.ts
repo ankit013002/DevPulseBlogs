@@ -1,16 +1,22 @@
 "use server";
 
 import { getCollection } from "@/lib/db";
+import { getUserFromCookie } from "@/lib/getUser";
 import { Binary } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { ZodError } from "zod";
 import type { ArticleDocument, ImageData } from "@/types";
+import { ArticleInputSchema } from "@/lib/schemas";
 
 export const updateArticle = async function (
   _prevState: object,
-  formData: FormData
+  formData: FormData,
 ): Promise<void> {
-  const articleCollection = await getCollection<ArticleDocument>("articles");
+  const userCookie = await getUserFromCookie();
+  if (!userCookie) redirect("/login");
+
+  const articlesCollection = await getCollection<ArticleDocument>("articles");
   const link = formData.get("link") as string;
 
   const coverImageFile = formData.get("coverImage") as File | null;
@@ -33,14 +39,28 @@ export const updateArticle = async function (
     tags: formData.getAll("tags") as string[],
     description: formData.get("description") as string,
     content: formData.get("content") as string,
-    updatedAt: new Date().toDateString(),
+    updatedAt: new Date().toISOString(),
   };
 
   if (coverImage) {
     updateFields.coverImage = coverImage;
   }
 
-  await articleCollection.updateOne({ link }, { $set: updateFields });
+  try {
+    ArticleInputSchema.partial().parse(updateFields);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      throw new Error(error.issues[0].message);
+    }
+    throw new Error("Validation failed");
+  }
+
+  // Verify the article belongs to the current user before updating
+  const existingArticle = await articlesCollection.findOne({ link });
+  if (!existingArticle) throw new Error("Article not found");
+  if (existingArticle.userId !== userCookie.userId) redirect("/");
+
+  await articlesCollection.updateOne({ link }, { $set: updateFields });
   revalidatePath("/");
   redirect("/");
 };
