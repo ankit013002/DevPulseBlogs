@@ -6,10 +6,11 @@ import { Binary } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { ArticleDocument, ImageData } from "@/types";
+import { ArticleInputSchema } from "@/lib/schemas";
 
 export const createArticle = async function (
   _prevState: object,
-  formData: FormData
+  formData: FormData,
 ): Promise<void> {
   const userCookie = await getUserFromCookie();
   if (!userCookie) redirect("/login");
@@ -32,7 +33,7 @@ export const createArticle = async function (
   const link = title.replaceAll(/[^a-zA-Z0-9]/g, "").toLowerCase();
   const dateString = new Date().toDateString();
 
-  const articleInfo: Omit<ArticleDocument, "_id"> = {
+  const articleInfo: ArticleDocument = {
     userId: userCookie.userId,
     title,
     link,
@@ -43,6 +44,15 @@ export const createArticle = async function (
     description: formData.get("description") as string,
     content: formData.get("content") as string,
   };
+
+  try {
+    ArticleInputSchema.parse(articleInfo);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error("An unknown error occurred during validation.");
+  }
 
   const articlesCollection = await getCollection<ArticleDocument>("articles");
   await articlesCollection.insertOne(articleInfo as ArticleDocument);

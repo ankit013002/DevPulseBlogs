@@ -1,4 +1,4 @@
-import { Binary, ObjectId } from "mongodb";
+import { Binary } from "mongodb";
 
 export interface ImageData {
   data: Binary;
@@ -8,7 +8,6 @@ export interface ImageData {
 }
 
 export interface UserDocument {
-  _id: ObjectId;
   username: string;
   password: string;
   firstName: string;
@@ -22,7 +21,6 @@ export interface UserDocument {
 }
 
 export interface ArticleDocument {
-  _id: ObjectId;
   userId: string;
   title: string;
   link: string;
