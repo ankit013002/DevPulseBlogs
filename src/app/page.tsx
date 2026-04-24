@@ -14,8 +14,8 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen">
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-transparent to-secondary/5">
-        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-24 lg:py-32">
           <div className="text-center">
             <div className="flex items-center justify-center mb-8">
@@ -41,7 +41,7 @@ export default async function Home() {
               </h1>
             </div>
 
-            <p className="text-xl sm:text-2xl lg:text-3xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-4xl mx-auto leading-relaxed">
               Where developers share insights, innovations, and the pulse of
               modern software development
             </p>
@@ -49,7 +49,7 @@ export default async function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <Link
                 href={user ? "/addArticle" : "/login"}
-                className="bg-primary hover:bg-primary-hover text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+                className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
               >
                 Share Your Story
               </Link>
@@ -67,28 +67,29 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent/20 rounded-full blur-lg"></div>
+        <div className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl pointer-events-none"></div>
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/10 rounded-full blur-xl pointer-events-none"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent/20 rounded-full blur-lg pointer-events-none"></div>
       </section>
 
-      <section className="py-20 bg-gradient-to-t from-primary to-[var-(--gradient-end)]">
+      {/* Features */}
+      <section className="py-20 bg-base-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[var-(--color-font)] mb-4">
+            <h2 className="text-4xl font-bold text-[var(--color-font)] mb-4">
               Why Developers Choose DevPulse
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Join thousands of developers sharing knowledge, insights, and
               cutting-edge solutions
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
+            <div className="group bg-base-100 p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-border">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-7 h-7 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -101,19 +102,19 @@ export default async function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              <h3 className="text-xl font-bold text-[var(--color-font)] mb-3">
                 Lightning Fast
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 Discover the latest tech insights with our optimized search and
                 intuitive interface designed for developers.
               </p>
             </div>
 
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
+            <div className="group bg-base-100 p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-border">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-7 h-7 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -126,19 +127,19 @@ export default async function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              <h3 className="text-xl font-bold text-[var(--color-font)] mb-3">
                 Community Driven
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 Connect with fellow developers, share experiences, and learn
                 from the collective wisdom of the tech community.
               </p>
             </div>
 
-            <div className="group bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
+            <div className="group bg-base-100 p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-border">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-200">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-7 h-7 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -151,10 +152,10 @@ export default async function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              <h3 className="text-xl font-bold text-[var(--color-font)] mb-3">
                 Stay Updated
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-sm">
                 Never miss the latest trends, frameworks, and best practices in
                 software development and technology.
               </p>
@@ -163,62 +164,53 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Stats */}
       <section className="py-16 bg-primary text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div className="group cursor-pointer">
-              <div className="text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200">
-                10K+
+            {[
+              { value: "10K+", label: "Active Developers" },
+              { value: "5K+", label: "Articles Published" },
+              { value: "50+", label: "Tech Topics" },
+              { value: "24/7", label: "Knowledge Sharing" },
+            ].map((stat) => (
+              <div key={stat.label} className="group cursor-pointer">
+                <div className="text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200">
+                  {stat.value}
+                </div>
+                <div className="text-white/70 text-sm">{stat.label}</div>
               </div>
-              <div className="text-primary-content/80">Active Developers</div>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200">
-                5K+
-              </div>
-              <div className="text-primary-content/80">Articles Published</div>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200">
-                50+
-              </div>
-              <div className="text-primary-content/80">Tech Topics</div>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="text-4xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200">
-                24/7
-              </div>
-              <div className="text-primary-content/80">Knowledge Sharing</div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-b from-primary to-[var-(--gradient-end)]">
+      {/* Latest articles */}
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-[var(--color-font)] mb-4">
               Latest from the Community
             </h2>
-            <p className="text-xl text-white max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Discover fresh insights, tutorials, and discussions from
               developers around the world
             </p>
-            <div className="mt-8 flex justify-center">
-              <div className="h-1 w-24 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+            <div className="mt-6 flex justify-center">
+              <div className="h-1 w-20 bg-gradient-to-r from-primary to-secondary rounded-full"></div>
             </div>
           </div>
 
           <ArticleCardsList />
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-10">
             <Link
               href="/articles"
-              className="inline-flex items-center bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-2xl font-semibold text-base shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
             >
               View All Articles
               <svg
-                className="w-5 h-5 ml-2"
+                className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -235,13 +227,14 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* CTA */}
       <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
         <div className="relative max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl sm:text-5xl font-bold mb-6">
             Ready to Share Your Expertise?
           </h2>
-          <p className="text-xl sm:text-2xl mb-8 text-primary-content/90">
+          <p className="text-xl mb-8 text-white/90">
             Join thousands of developers who are already sharing their knowledge
             on DevPulse
           </p>
@@ -253,16 +246,15 @@ export default async function Home() {
               Get Started Today
             </Link>
             <Link
-              href="/about"
+              href="/articles"
               className="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 rounded-2xl font-semibold text-lg transition-all duration-200"
             >
-              Learn More
+              Browse Articles
             </Link>
           </div>
         </div>
-
-        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
-        <div className="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+        <div className="absolute bottom-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
       </section>
     </div>
   );
