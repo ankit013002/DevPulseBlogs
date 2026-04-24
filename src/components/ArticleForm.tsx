@@ -2,9 +2,9 @@
 
 import { createArticle } from "@/action/createArticle";
 import Tiptap from "@/components/tiptap";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import React, { useActionState, useRef, useState } from "react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { updateArticle } from "@/action/updateArticle";
 import { deleteArticle } from "@/action/deleteArticle";
@@ -23,14 +23,21 @@ interface ArticleFormProps {
 const MAX_TAGS = 3;
 
 const ArticleForm = ({ article, requestType }: ArticleFormProps) => {
+  const router = useRouter();
   const [title, setTitle] = useState(article?.title ?? "");
   const [author, setAuthor] = useState(article?.author ?? "");
   const [description, setDescription] = useState(article?.description ?? "");
   const [body, setBody] = useState(article?.content ?? "");
-  const [coverImage, setCoverImage] = useState<File | string>(article?.coverImage ?? "");
   const [coverImageUrl, setCoverImageUrl] = useState(article?.coverImage ?? "");
+  const coverObjectUrlRef = useRef<string>("");
   const [tags, setTags] = useState<string[]>(article?.tags ?? []);
   const [tagValue, setTagValue] = useState("");
+
+  useEffect(() => {
+    return () => {
+      if (coverObjectUrlRef.current) URL.revokeObjectURL(coverObjectUrlRef.current);
+    };
+  }, []);
 
   const [articleState, articleAction, isPending] = useActionState<ArticleFormState, FormData>(
     requestType === "submit" ? createArticle : updateArticle,
@@ -218,8 +225,10 @@ const ArticleForm = ({ article, requestType }: ArticleFormProps) => {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    setCoverImage(file);
-                    setCoverImageUrl(URL.createObjectURL(file));
+                    if (coverObjectUrlRef.current) URL.revokeObjectURL(coverObjectUrlRef.current);
+                    const objectUrl = URL.createObjectURL(file);
+                    coverObjectUrlRef.current = objectUrl;
+                    setCoverImageUrl(objectUrl);
                   }
                 }}
                 className="hidden"
@@ -248,7 +257,7 @@ const ArticleForm = ({ article, requestType }: ArticleFormProps) => {
               {requestType === "update" && (
                 <button
                   type="button"
-                  onClick={() => redirect("/")}
+                  onClick={() => router.back()}
                   disabled={isPending}
                   className="btn btn-ghost rounded-xl font-medium text-muted-foreground disabled:opacity-50"
                 >

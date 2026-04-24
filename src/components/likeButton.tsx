@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useOptimistic, useTransition } from "react";
 import { FaHeart } from "react-icons/fa";
 
 interface LikeButtonProps {
@@ -10,9 +10,32 @@ interface LikeButtonProps {
 }
 
 const LikeButton = ({ action, articleLink, isLikedArticle }: LikeButtonProps) => {
+  const [optimisticLiked, setOptimisticLiked] = useOptimistic(isLikedArticle);
+  const [isPending, startTransition] = useTransition();
+
+  const handleClick = () => {
+    startTransition(() => {
+      setOptimisticLiked(!optimisticLiked);
+      action(articleLink);
+    });
+  };
+
   return (
-    <button onClick={() => action(articleLink)}>
-      <FaHeart style={isLikedArticle ? { color: "red" } : { color: "gray" }} />
+    <button
+      onClick={handleClick}
+      disabled={isPending}
+      aria-label={optimisticLiked ? "Unlike article" : "Like article"}
+      aria-pressed={optimisticLiked}
+      className="group p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors disabled:opacity-60"
+    >
+      <FaHeart
+        size={18}
+        className={`transition-all duration-200 ${
+          optimisticLiked
+            ? "text-red-500 scale-110"
+            : "text-muted-foreground group-hover:text-red-400"
+        }`}
+      />
     </button>
   );
 };

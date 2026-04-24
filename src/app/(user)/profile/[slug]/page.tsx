@@ -15,7 +15,7 @@ import { followUserAction } from "./followUserAction";
 import UnfollowButton from "@/components/unfollowButton";
 import { unfollowUserAction } from "./unfollowUserAction";
 import { getSerializedLikedArticles } from "./getSerializedLikedArticles";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { SerializedArticle } from "@/types";
 
 interface PageProps {
@@ -24,10 +24,10 @@ interface PageProps {
 
 const ProfilePage = async function ({ params }: PageProps) {
   const currUserCookie = await getUserFromCookie();
-  if (!currUserCookie) notFound();
+  if (!currUserCookie) redirect("/login");
 
   const currUser = await getUserInformationById(currUserCookie.userId);
-  if (!currUser) notFound();
+  if (!currUser) redirect("/login");
 
   const { slug } = await params;
   const user = await getUserInformationByUserName(slug);

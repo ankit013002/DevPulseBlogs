@@ -110,13 +110,14 @@ export default async function Navbar() {
                     </Link>
                   </li>
                   <li className="mt-1 pt-1 border-t border-border">
-                    <button
-                      onClick={logout}
-                      type="submit"
-                      className="rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors w-full text-left"
-                    >
-                      Log Out
-                    </button>
+                    <form action={logout}>
+                      <button
+                        type="submit"
+                        className="rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors w-full text-left px-2 py-1.5"
+                      >
+                        Log Out
+                      </button>
+                    </form>
                   </li>
                 </ul>
               </div>

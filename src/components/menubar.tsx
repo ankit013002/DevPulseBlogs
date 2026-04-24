@@ -87,9 +87,17 @@ const Menubar = ({ editor }: MenubarProps) => {
     const trimmed = linkUrl.trim();
     if (!trimmed) {
       editor.chain().focus().unsetLink().run();
-    } else {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: trimmed }).run();
+      setLinkPopoverOpen(false);
+      setLinkUrl("");
+      return;
     }
+    try {
+      const url = new URL(trimmed);
+      if (!["http:", "https:", "mailto:"].includes(url.protocol)) return;
+    } catch {
+      return;
+    }
+    editor.chain().focus().extendMarkRange("link").setLink({ href: trimmed }).run();
     setLinkPopoverOpen(false);
     setLinkUrl("");
   };
