@@ -64,7 +64,7 @@ export default async function ArticlePage({ params }: PageProps) {
     ? currUser.likedArticles.includes(article.link)
     : false;
 
-  const isAuthor = currUser && currUser._id.toString() === user._id.toString();
+  const isAuthor = currUser && currUser._id!.toString() === user._id!.toString();
 
   const wordCount = article.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length;
   const readTime = Math.max(1, Math.ceil(wordCount / 200));

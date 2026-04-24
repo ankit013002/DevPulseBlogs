@@ -6,6 +6,8 @@ import { Binary } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { ArticleDocument, ArticleFormState, ImageData } from "@/types";
+import { ArticleInputSchema } from "@/lib/schemas";
+import { ZodError } from "zod";
 
 export const createArticle = async function (
   _prevState: ArticleFormState,
@@ -20,37 +22,45 @@ export const createArticle = async function (
   const content = (formData.get("content") as string)?.trim();
   if (!content || content === "<p></p>") return { error: "Article content cannot be empty." };
 
-  try {
-    const coverImageFile = formData.get("coverImage") as File | null;
-    let coverImage: ImageData | null = null;
+  const coverImageFile = formData.get("coverImage") as File | null;
+  let coverImage: ImageData | null = null;
 
-    if (coverImageFile && coverImageFile.size > 0) {
-      const arrayBuffer = await coverImageFile.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      coverImage = {
-        data: new Binary(buffer),
-        filename: coverImageFile.name,
-        mimeType: coverImageFile.type,
-        size: buffer.length,
-      };
-    }
-
-    const link = title.replaceAll(/[^a-zA-Z0-9]/g, "").toLowerCase();
-    if (!link) return { error: "Title must contain at least one letter or number." };
-    const dateString = new Date().toDateString();
-
-    const articleInfo: Omit<ArticleDocument, "_id"> = {
-      userId: userCookie.userId,
-      title,
-      link,
-      author: formData.get("author") as string,
-      date: dateString,
-      tags: formData.getAll("tags") as string[],
-      coverImage,
-      description: formData.get("description") as string,
-      content,
+  if (coverImageFile && coverImageFile.size > 0) {
+    const arrayBuffer = await coverImageFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    coverImage = {
+      data: new Binary(buffer),
+      filename: coverImageFile.name,
+      mimeType: coverImageFile.type,
+      size: buffer.length,
     };
+  }
 
+  const link = title.replaceAll(/[^a-zA-Z0-9]/g, "").toLowerCase();
+  if (!link) return { error: "Title must contain at least one letter or number." };
+
+  const articleInfo: Omit<ArticleDocument, "_id"> = {
+    userId: userCookie.userId,
+    title,
+    link,
+    author: formData.get("author") as string,
+    date: new Date().toDateString(),
+    tags: formData.getAll("tags") as string[],
+    coverImage,
+    description: formData.get("description") as string,
+    content,
+  };
+
+  try {
+    ArticleInputSchema.parse(articleInfo);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { error: error.issues[0].message };
+    }
+    return { error: "Validation failed." };
+  }
+
+  try {
     const articlesCollection = await getCollection<ArticleDocument>("articles");
     await articlesCollection.insertOne(articleInfo as ArticleDocument);
     revalidatePath("/");

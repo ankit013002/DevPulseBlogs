@@ -6,6 +6,8 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { Binary } from "mongodb";
 import type { UserDocument, RegisterState, ImageData } from "@/types";
+import { UserInputSchema } from "@/lib/schemas";
+import { ZodError } from "zod";
 
 export const register = async function (
   _prevState: RegisterState,
@@ -24,38 +26,45 @@ export const register = async function (
       size: buffer.length,
     };
   }
-
   const username = formData.get("username") as string;
   const password = formData.get("password") as string;
   const email = formData.get("email") as string;
+  const confirmemail = formData.get("confirmemail") as string;
 
-  const error: RegisterState["error"] = {};
-
-  if (username.length === 0) {
-    error.username = "Error: Field cannot be empty";
-  }
-  if (password.length === 0) {
-    error.password = "Error: Field cannot be empty";
-  }
-  if (email.length === 0) {
-    error.email = "Error: Field cannot be empty";
-  }
-  if (email !== formData.get("confirmemail")) {
-    error.email = "Error: Confirmation email does not match email";
+  // Check email confirmation (Zod can't do this)
+  if (email !== confirmemail) {
+    return {
+      error: { email: "Error: Confirmation email does not match email" },
+      success: false,
+    };
   }
 
-  if (error.username || error.password || error.email) {
-    return { error, success: false };
+  const firstName = formData.get("firstName") as string;
+  const lastName = formData.get("lastName") as string;
+
+  // Validate raw input BEFORE hashing — the schema checks password strength
+  try {
+    UserInputSchema.parse({ username, password, firstName, lastName, email, profilePicture });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const fieldErrors = error.flatten().fieldErrors as Record<string, string[] | undefined>;
+      return {
+        error: {
+          username: fieldErrors["username"]?.[0],
+          email: fieldErrors["email"]?.[0],
+          password: fieldErrors["password"]?.[0],
+        },
+        success: false,
+      };
+    }
+    return { error: { email: "Error: Validation failed. Please try again." }, success: false };
   }
 
-  const salt = bcrypt.genSaltSync(10);
-  const hashedPassword = bcrypt.hashSync(password, salt);
-
-  const user: Omit<UserDocument, "_id"> = {
+  const user = {
     username,
-    password: hashedPassword,
-    firstName: formData.get("firstName") as string,
-    lastName: formData.get("lastName") as string,
+    password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
+    firstName,
+    lastName,
     profilePicture,
     email,
     followers: [],
@@ -63,22 +72,54 @@ export const register = async function (
     likedArticles: [],
   };
 
-  const userCollection = await getCollection<UserDocument>("users");
-  const userData = await userCollection.insertOne(user as UserDocument);
-  const userId = userData.insertedId.toString();
+  try {
+    const userCollection = await getCollection<UserDocument>("users");
 
-  const token = jwt.sign(
-    { userId, exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24) },
-    process.env.JWTSECRET as string,
-  );
+    // Check for duplicate email or username
+    const existingUser = await userCollection.findOne({
+      $or: [{ email }, { username }],
+    });
 
-  const cookieStore = await cookies();
-  cookieStore.set("DevPulse", token, {
-    httpOnly: true,
-    sameSite: "strict",
-    maxAge: 60 * 60 * 24,
-    secure: process.env.NODE_ENV === "production",
-  });
+    if (existingUser) {
+      if (existingUser.email === email) {
+        return {
+          error: { email: "Error: Email already in use" },
+          success: false,
+        };
+      }
+      if (existingUser.username === username) {
+        return {
+          error: { username: "Error: Username already taken" },
+          success: false,
+        };
+      }
+    }
 
-  return { success: true };
+    const userData = await userCollection.insertOne(user);
+    const userId = userData.insertedId.toString();
+
+    const secret = process.env.JWTSECRET;
+    if (!secret) throw new Error("JWTSECRET not configured");
+
+    const token = jwt.sign(
+      { userId, exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24) },
+      secret,
+    );
+
+    const cookieStore = await cookies();
+    cookieStore.set("DevPulse", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24,
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Registration error:", error);
+    return {
+      error: { email: "Error: Registration failed. Please try again." },
+      success: false,
+    };
+  }
 };

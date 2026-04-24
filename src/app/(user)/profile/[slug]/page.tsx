@@ -34,7 +34,7 @@ const ProfilePage = async function ({ params }: PageProps) {
   if (!user) notFound();
 
   const profilePic = await getBase64Image(user.profilePicture);
-  const articles = await getArticlesByUserId(user._id.toString());
+  const articles = await getArticlesByUserId(user._id!.toString());
 
   const serializedArticles: SerializedArticle[] = await Promise.all(
     articles.map(async (article) => {

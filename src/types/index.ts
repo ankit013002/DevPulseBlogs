@@ -8,7 +8,7 @@ export interface ImageData {
 }
 
 export interface UserDocument {
-  _id: ObjectId;
+  _id?: ObjectId;
   username: string;
   password: string;
   firstName: string;
@@ -22,7 +22,7 @@ export interface UserDocument {
 }
 
 export interface ArticleDocument {
-  _id: ObjectId;
+  _id?: ObjectId;
   userId: string;
   title: string;
   link: string;
