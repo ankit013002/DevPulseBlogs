@@ -19,6 +19,13 @@ export async function PUT(req: NextRequest) {
 
   const profilePictureFile = formData.get("profilePicture") as File | null;
   if (profilePictureFile && profilePictureFile.size > 0) {
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (profilePictureFile.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: "File size exceeds 5 MB limit." }, { status: 400 });
+    }
+    if (!ALLOWED_TYPES.includes(profilePictureFile.type)) {
+      return NextResponse.json({ error: "Invalid file type. Only JPG, PNG, GIF, and WebP are allowed." }, { status: 400 });
+    }
     const arrayBuffer = await profilePictureFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const profilePicture: ImageData = {

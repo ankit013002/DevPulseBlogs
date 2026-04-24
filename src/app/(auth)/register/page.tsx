@@ -2,25 +2,32 @@
 
 import { register } from "@/action/userRegister";
 import Image from "next/image";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import React, { useActionState, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { RegisterState } from "@/types";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [userState, userAction] = useActionState<RegisterState, FormData>(
     register,
     {}
   );
-  const [profileImage, setProfileImage] = useState<File | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState("");
+  const profileObjectUrlRef = useRef<string>("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    return () => {
+      if (profileObjectUrlRef.current) URL.revokeObjectURL(profileObjectUrlRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (userState.success) {
-      redirect("/");
+      router.replace("/");
     }
-  }, [userState.success]);
+  }, [userState.success, router]);
 
   const handleFileClick = () => fileRef.current?.click();
 
@@ -72,8 +79,10 @@ const RegisterPage = () => {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
-                    setProfileImage(file);
-                    setProfileImageUrl(URL.createObjectURL(file));
+                    if (profileObjectUrlRef.current) URL.revokeObjectURL(profileObjectUrlRef.current);
+                    const objectUrl = URL.createObjectURL(file);
+                    profileObjectUrlRef.current = objectUrl;
+                    setProfileImageUrl(objectUrl);
                   }
                 }}
                 className="hidden"

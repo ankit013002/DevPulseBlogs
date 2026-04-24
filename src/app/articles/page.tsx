@@ -49,8 +49,8 @@ async function ArticlesList() {
 
   return (
     <>
-      {serializedArticles.map((article, index) => (
-        <ArticleCard cardInfo={article} user={article.user} key={index} />
+      {serializedArticles.map((article) => (
+        <ArticleCard cardInfo={article} user={article.user} key={article.link} />
       ))}
     </>
   );

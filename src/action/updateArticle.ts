@@ -1,6 +1,7 @@
 "use server";
 
 import { getCollection } from "@/lib/db";
+import { getUserFromCookie } from "@/lib/getUser";
 import { Binary } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -10,6 +11,9 @@ export const updateArticle = async function (
   _prevState: ArticleFormState,
   formData: FormData
 ): Promise<ArticleFormState> {
+  const userCookie = await getUserFromCookie();
+  if (!userCookie) redirect("/login");
+
   const title = (formData.get("title") as string)?.trim();
   if (!title) return { error: "Title is required." };
 
@@ -47,7 +51,13 @@ export const updateArticle = async function (
       updateFields.coverImage = coverImage;
     }
 
-    await articleCollection.updateOne({ link }, { $set: updateFields });
+    const result = await articleCollection.updateOne(
+      { link, userId: userCookie.userId },
+      { $set: updateFields }
+    );
+    if (result.matchedCount === 0) {
+      return { error: "Article not found or you don't have permission to edit it." };
+    }
     revalidatePath("/");
   } catch {
     return { error: "Failed to save changes. Please try again." };

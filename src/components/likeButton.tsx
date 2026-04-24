@@ -11,7 +11,7 @@ interface LikeButtonProps {
 
 const LikeButton = ({ action, articleLink, isLikedArticle }: LikeButtonProps) => {
   const [optimisticLiked, setOptimisticLiked] = useOptimistic(isLikedArticle);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const handleClick = () => {
     startTransition(() => {
@@ -23,9 +23,10 @@ const LikeButton = ({ action, articleLink, isLikedArticle }: LikeButtonProps) =>
   return (
     <button
       onClick={handleClick}
+      disabled={isPending}
       aria-label={optimisticLiked ? "Unlike article" : "Like article"}
       aria-pressed={optimisticLiked}
-      className="group p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+      className="group p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors disabled:opacity-60"
     >
       <FaHeart
         size={18}

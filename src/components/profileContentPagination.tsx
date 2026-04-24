@@ -56,8 +56,8 @@ const ProfileContentPagination = ({
         <div>
           {userArticles.length === 0
             ? empty("Articles")
-            : userArticles.map((article, index) => (
-                <ArticleCard cardInfo={article} user={article.user} key={index} />
+            : userArticles.map((article) => (
+                <ArticleCard cardInfo={article} user={article.user} key={article.link} />
               ))}
         </div>
       )}
@@ -66,8 +66,8 @@ const ProfileContentPagination = ({
         <div>
           {likedArticles.length === 0
             ? empty("Liked articles")
-            : likedArticles.map((article, index) => (
-                <ArticleCard cardInfo={article} user={article.user} key={index} />
+            : likedArticles.map((article) => (
+                <ArticleCard cardInfo={article} user={article.user} key={article.link} />
               ))}
         </div>
       )}

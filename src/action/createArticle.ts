@@ -36,6 +36,7 @@ export const createArticle = async function (
     }
 
     const link = title.replaceAll(/[^a-zA-Z0-9]/g, "").toLowerCase();
+    if (!link) return { error: "Title must contain at least one letter or number." };
     const dateString = new Date().toDateString();
 
     const articleInfo: Omit<ArticleDocument, "_id"> = {

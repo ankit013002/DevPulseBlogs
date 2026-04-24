@@ -15,7 +15,7 @@ interface PageProps {
 
 async function SearchResults({ slug }: { slug: string }) {
   const query = decodeURIComponent(slug);
-  const articles = await getArticlesBySlug(slug);
+  const articles = await getArticlesBySlug(query);
   const serializedArticles: SerializedArticle[] = await Promise.all(
     articles.map(async (article) => {
       const coverImage = await getBase64Image(article.coverImage);
@@ -65,8 +65,8 @@ async function SearchResults({ slug }: { slug: string }) {
 
   return (
     <>
-      {serializedArticles.map((article, index) => (
-        <ArticleCard cardInfo={article} user={article.user} key={index} />
+      {serializedArticles.map((article) => (
+        <ArticleCard cardInfo={article} user={article.user} key={article.link} />
       ))}
     </>
   );
