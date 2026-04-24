@@ -4,11 +4,11 @@ import { createArticle } from "@/action/createArticle";
 import Tiptap from "@/components/tiptap";
 import { redirect } from "next/navigation";
 import dynamic from "next/dynamic";
-import React, { useActionState, useEffect, useRef, useState } from "react";
+import React, { useActionState, useRef, useState } from "react";
 import Image from "next/image";
 import { updateArticle } from "@/action/updateArticle";
 import { deleteArticle } from "@/action/deleteArticle";
-import type { ArticleFormData } from "@/types";
+import type { ArticleFormData, ArticleFormState } from "@/types";
 
 const IoIosClose = dynamic(
   () => import("react-icons/io").then((mod) => mod.IoIosClose),
@@ -23,24 +23,16 @@ interface ArticleFormProps {
 const MAX_TAGS = 3;
 
 const ArticleForm = ({ article, requestType }: ArticleFormProps) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(article?.title ?? "");
+  const [author, setAuthor] = useState(article?.author ?? "");
+  const [description, setDescription] = useState(article?.description ?? "");
   const [body, setBody] = useState(article?.content ?? "");
-  const [coverImage, setCoverImage] = useState<File | string>("");
-  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [coverImage, setCoverImage] = useState<File | string>(article?.coverImage ?? "");
+  const [coverImageUrl, setCoverImageUrl] = useState(article?.coverImage ?? "");
   const [tags, setTags] = useState<string[]>(article?.tags ?? []);
   const [tagValue, setTagValue] = useState("");
 
-  useEffect(() => {
-    setTitle(article?.title ?? "");
-    setAuthor(article?.author ?? "");
-    setDescription(article?.description ?? "");
-    setCoverImage(article?.coverImage ?? "");
-    setCoverImageUrl(article?.coverImage ?? "");
-  }, []);
-
-  const [, articleAction] = useActionState<object, FormData>(
+  const [articleState, articleAction, isPending] = useActionState<ArticleFormState, FormData>(
     requestType === "submit" ? createArticle : updateArticle,
     {}
   );
@@ -66,6 +58,14 @@ const ArticleForm = ({ article, requestType }: ArticleFormProps) => {
 
   return (
     <div className="h-full">
+      {articleState.error && (
+        <div role="alert" className="mb-4 flex items-start gap-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-xl px-4 py-3 text-sm">
+          <svg className="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          {articleState.error}
+        </div>
+      )}
       <form
         action={articleAction}
         className="flex flex-col h-full gap-6 p-4"
@@ -228,14 +228,29 @@ const ArticleForm = ({ article, requestType }: ArticleFormProps) => {
 
             {/* Actions */}
             <div className="flex flex-col gap-2">
-              <button type="submit" className="btn btn-primary border-0 rounded-xl font-semibold">
-                {requestType === "submit" ? "Publish Article" : "Save Changes"}
+              <button
+                type="submit"
+                disabled={isPending}
+                className="btn btn-primary border-0 rounded-xl font-semibold disabled:opacity-60"
+              >
+                {isPending ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                    </svg>
+                    {requestType === "submit" ? "Publishing…" : "Saving…"}
+                  </span>
+                ) : (
+                  requestType === "submit" ? "Publish Article" : "Save Changes"
+                )}
               </button>
               {requestType === "update" && (
                 <button
                   type="button"
                   onClick={() => redirect("/")}
-                  className="btn btn-ghost rounded-xl font-medium text-muted-foreground"
+                  disabled={isPending}
+                  className="btn btn-ghost rounded-xl font-medium text-muted-foreground disabled:opacity-50"
                 >
                   Cancel
                 </button>
