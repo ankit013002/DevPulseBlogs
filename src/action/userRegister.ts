@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { Binary } from "mongodb";
 import type { UserDocument, RegisterState, ImageData } from "@/types";
 import { UserInputSchema } from "@/lib/schemas";
-import { ZodError } from "zod/v3";
+import { ZodError } from "zod";
 
 export const register = async function (
   _prevState: RegisterState,
@@ -39,33 +39,38 @@ export const register = async function (
     };
   }
 
+  const firstName = formData.get("firstName") as string;
+  const lastName = formData.get("lastName") as string;
+
+  // Validate raw input BEFORE hashing — the schema checks password strength
+  try {
+    UserInputSchema.parse({ username, password, firstName, lastName, email, profilePicture });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const fieldErrors = error.flatten().fieldErrors as Record<string, string[] | undefined>;
+      return {
+        error: {
+          username: fieldErrors["username"]?.[0],
+          email: fieldErrors["email"]?.[0],
+          password: fieldErrors["password"]?.[0],
+        },
+        success: false,
+      };
+    }
+    return { error: { email: "Error: Validation failed. Please try again." }, success: false };
+  }
+
   const user = {
     username,
     password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
-    firstName: formData.get("firstName") as string,
-    lastName: formData.get("lastName") as string,
+    firstName,
+    lastName,
     profilePicture,
     email,
     followers: [],
     following: [],
     likedArticles: [],
   };
-
-  try {
-    UserInputSchema.parse(user);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const fieldErrors = error.flatten().fieldErrors;
-      return {
-        error: {
-          username: fieldErrors.username?.[0],
-          email: fieldErrors.email?.[0],
-          password: fieldErrors.password?.[0],
-        },
-        success: false,
-      };
-    }
-  }
 
   try {
     const userCollection = await getCollection<UserDocument>("users");

@@ -34,7 +34,7 @@ export default async function ArticlePage({ params }: PageProps) {
     ? currUser.likedArticles.includes(article.link)
     : false;
 
-  const isAuthor = currUser && currUser._id.toString() === user._id.toString();
+  const isAuthor = currUser && currUser._id!.toString() === user._id!.toString();
 
   return (
     <article className="max-w-3xl mx-auto py-12 px-4">

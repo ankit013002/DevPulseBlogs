@@ -46,7 +46,7 @@ export const login = async function (
 
   const token = jwt.sign(
     {
-      userId: userData._id,
+      userId: userData._id.toString(),
       exp: Math.floor(Date.now() / 1000 + 60 * 60 * 24),
     },
     secret,

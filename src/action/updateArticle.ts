@@ -55,12 +55,11 @@ export const updateArticle = async function (
     throw new Error("Validation failed");
   }
 
-  // Verify the article belongs to the current user before updating
-  const existingArticle = await articlesCollection.findOne({ link });
-  if (!existingArticle) throw new Error("Article not found");
-  if (existingArticle.userId !== userCookie.userId) redirect("/");
-
-  await articlesCollection.updateOne({ link }, { $set: updateFields });
+  const result = await articlesCollection.updateOne(
+    { link, userId: userCookie.userId },
+    { $set: updateFields }
+  );
+  if (result.matchedCount === 0) throw new Error("Article not found or permission denied");
   revalidatePath("/");
   redirect("/");
 };
