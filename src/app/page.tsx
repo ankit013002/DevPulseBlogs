@@ -2,9 +2,11 @@
 
 import { getUserInformationById } from "@/action/getUserInformation";
 import ArticleCardsList from "@/components/articleCardsList";
+import { ArticleCardSkeletonList } from "@/components/articleCardSkeleton";
 import SearchBar from "@/components/SearchBar";
 import { getUserFromCookie } from "@/lib/getUser";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function Home() {
   const userCookie = await getUserFromCookie();
@@ -201,7 +203,9 @@ export default async function Home() {
             </div>
           </div>
 
-          <ArticleCardsList />
+          <Suspense fallback={<ArticleCardSkeletonList count={3} />}>
+            <ArticleCardsList />
+          </Suspense>
 
           <div className="text-center mt-10">
             <Link

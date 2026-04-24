@@ -182,3 +182,83 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ── TipTap / highlight.js code block theme ─────────────────────────── */
+.hljs {
+  background: transparent;
+}
+
+pre.hljs,
+pre code.hljs {
+  display: block;
+  overflow-x: auto;
+}
+
+/* Light mode tokens */
+:root {
+  --hljs-bg: #f6f8fa;
+  --hljs-color: #24292e;
+  --hljs-comment: #6a737d;
+  --hljs-keyword: #d73a49;
+  --hljs-string: #032f62;
+  --hljs-number: #005cc5;
+  --hljs-title: #6f42c1;
+  --hljs-attr: #e36209;
+  --hljs-built_in: #005cc5;
+  --hljs-tag: #22863a;
+  --hljs-type: #6f42c1;
+}
+
+/* Dark mode tokens */
+.dark {
+  --hljs-bg: #161b22;
+  --hljs-color: #c9d1d9;
+  --hljs-comment: #8b949e;
+  --hljs-keyword: #ff7b72;
+  --hljs-string: #a5d6ff;
+  --hljs-number: #79c0ff;
+  --hljs-title: #d2a8ff;
+  --hljs-attr: #ffa657;
+  --hljs-built_in: #79c0ff;
+  --hljs-tag: #7ee787;
+  --hljs-type: #d2a8ff;
+}
+
+/* Code block container */
+.ProseMirror pre,
+.prose pre {
+  background: var(--hljs-bg);
+  color: var(--hljs-color);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  border: 1px solid var(--border);
+  margin: 1.25rem 0;
+}
+
+.ProseMirror pre code,
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  border: none;
+}
+
+/* Token colours */
+.hljs-comment, .hljs-quote          { color: var(--hljs-comment); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag,
+.hljs-deletion                      { color: var(--hljs-keyword); }
+.hljs-string, .hljs-addition,
+.hljs-selector-attr,
+.hljs-selector-pseudo               { color: var(--hljs-string); }
+.hljs-number, .hljs-literal,
+.hljs-variable, .hljs-template-variable { color: var(--hljs-number); }
+.hljs-title, .hljs-section,
+.hljs-name                          { color: var(--hljs-title); font-weight: 600; }
+.hljs-attr, .hljs-attribute         { color: var(--hljs-attr); }
+.hljs-built_in, .hljs-builtin-name  { color: var(--hljs-built_in); }
+.hljs-tag                           { color: var(--hljs-tag); }
+.hljs-type, .hljs-class-name        { color: var(--hljs-type); }
