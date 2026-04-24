@@ -8,20 +8,14 @@ interface UnfollowButtonProps {
   action: (followingUsername: string, followerUsername: string) => void;
 }
 
-const UnfollowButton = ({
-  followerUsername,
-  followingUsername,
-  action,
-}: UnfollowButtonProps) => {
+const UnfollowButton = ({ followerUsername, followingUsername, action }: UnfollowButtonProps) => {
   return (
-    <div className="flex justify-center my-4">
-      <button
-        className="btn btn-primary-content w-[50%] max-w-[360px] min-w-[200px]"
-        onClick={() => action(followingUsername, followerUsername)}
-      >
-        Unfollow
-      </button>
-    </div>
+    <button
+      onClick={() => action(followingUsername, followerUsername)}
+      className="btn btn-sm border border-border bg-transparent text-[var(--color-font)] hover:bg-accent rounded-xl px-5 font-semibold transition-colors"
+    >
+      Following
+    </button>
   );
 };
 

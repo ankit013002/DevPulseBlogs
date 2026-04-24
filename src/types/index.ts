@@ -86,3 +86,7 @@ export interface RegisterState {
   error?: RegisterErrors;
   success?: boolean;
 }
+
+export interface ArticleFormState {
+  error?: string;
+}

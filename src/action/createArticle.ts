@@ -5,16 +5,22 @@ import { getUserFromCookie } from "@/lib/getUser";
 import { Binary } from "mongodb";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { ArticleDocument, ImageData } from "@/types";
+import type { ArticleDocument, ArticleFormState, ImageData } from "@/types";
 import { ArticleInputSchema } from "@/lib/schemas";
 import { ZodError } from "zod";
 
 export const createArticle = async function (
-  _prevState: object,
-  formData: FormData,
-): Promise<void> {
+  _prevState: ArticleFormState,
+  formData: FormData
+): Promise<ArticleFormState> {
   const userCookie = await getUserFromCookie();
   if (!userCookie) redirect("/login");
+
+  const title = (formData.get("title") as string)?.trim();
+  if (!title) return { error: "Title is required." };
+
+  const content = (formData.get("content") as string)?.trim();
+  if (!content || content === "<p></p>") return { error: "Article content cannot be empty." };
 
   const coverImageFile = formData.get("coverImage") as File | null;
   let coverImage: ImageData | null = null;
@@ -30,33 +36,37 @@ export const createArticle = async function (
     };
   }
 
-  const title = formData.get("title") as string;
   const link = title.replaceAll(/[^a-zA-Z0-9]/g, "").toLowerCase();
-  const dateString = new Date().toDateString();
+  if (!link) return { error: "Title must contain at least one letter or number." };
 
-  const articleInfo: ArticleDocument = {
+  const articleInfo: Omit<ArticleDocument, "_id"> = {
     userId: userCookie.userId,
     title,
     link,
     author: formData.get("author") as string,
-    date: dateString,
+    date: new Date().toDateString(),
     tags: formData.getAll("tags") as string[],
     coverImage,
     description: formData.get("description") as string,
-    content: formData.get("content") as string,
+    content,
   };
 
   try {
     ArticleInputSchema.parse(articleInfo);
   } catch (error) {
     if (error instanceof ZodError) {
-      throw new Error(error.issues[0].message);
+      return { error: error.issues[0].message };
     }
-    throw new Error("Validation failed");
+    return { error: "Validation failed." };
   }
 
-  const articlesCollection = await getCollection<ArticleDocument>("articles");
-  await articlesCollection.insertOne(articleInfo as ArticleDocument);
-  revalidatePath("/");
+  try {
+    const articlesCollection = await getCollection<ArticleDocument>("articles");
+    await articlesCollection.insertOne(articleInfo as ArticleDocument);
+    revalidatePath("/");
+  } catch {
+    return { error: "Failed to publish article. Please try again." };
+  }
+
   redirect("/");
 };
