@@ -12,69 +12,86 @@ interface ArticleCardProps {
   user: SerializedUser;
 }
 
+function estimateReadTime(html: string): number {
+  const text = html.replace(/<[^>]+>/g, " ");
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
 const ArticleCard = ({ cardInfo, user }: ArticleCardProps) => {
-  const formattedDate = format(new Date(cardInfo.date), "MMMM d, yyyy");
+  const formattedDate = format(new Date(cardInfo.date), "MMM d, yyyy");
+  const readTime = estimateReadTime(cardInfo.description + (cardInfo.content ?? ""));
 
   return (
-    <div className="w-full flex justify-center mx-auto">
-      <Link href={`/article/${cardInfo.link}`} className="w-4xl">
-        <article className="group block mx-auto my-6 bg-transparent shadow-md hover:shadow-lg transition-shadow duration-200 rounded-lg overflow-hidden">
+    <div className="w-full flex justify-center mx-auto px-4">
+      <Link href={`/article/${cardInfo.link}`} className="w-full max-w-4xl block group">
+        <article className="flex flex-col md:flex-row gap-0 my-4 bg-base-100 border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+          {/* Cover image */}
           {cardInfo.coverImage && (
-            <figure className="relative w-full h-48 sm:h-56 md:h-64 lg:h-72">
+            <figure className="relative shrink-0 w-full md:w-56 h-48 md:h-auto">
               <Image
                 src={cardInfo.coverImage}
                 alt={cardInfo.title}
                 fill
-                className="object-cover object-center"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 priority={false}
               />
             </figure>
           )}
 
-          <div className="p-6 flex flex-col md:flex-row md:justify-between bg-accent">
-            <div className="md:w-3/4">
-              <header>
-                <h2 className="text-2xl text-[var(--color-font)] font-semibold group-hover:text-primary transition-colors">
-                  {cardInfo.title}
-                </h2>
-                <time
-                  dateTime={cardInfo.date}
-                  className="block mt-1 text-sm text-gray-500"
-                >
-                  {formattedDate}
-                </time>
-              </header>
-
-              <section className="mt-4 text-[var(--color-font)] prose prose-sm max-w-none">
-                {parse(cardInfo.description)}
-              </section>
-            </div>
-
-            <footer className="mt-6 md:mt-0 md:w-1/4 flex flex-col justify-between">
-              <div className="flex items-center">
-                {user.profilePicture && (
-                  <Image
-                    src={user.profilePicture}
-                    alt={`${user.firstName} ${user.lastName}`}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                )}
-                <p className="ml-3 text-sm font-medium text-[var(--color-font)]">
-                  {user.firstName} {user.lastName}
-                </p>
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {cardInfo.tags?.map((tag) => (
+          {/* Content */}
+          <div className="flex flex-col justify-between p-5 flex-1 min-w-0">
+            {/* Tags */}
+            {cardInfo.tags?.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {cardInfo.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-block bg-primary/10 text-primary text-xs font-medium px-3 py-1 rounded-full transition-colors duration-150 hover:bg-primary/20"
+                    className="inline-block bg-primary/10 text-primary text-xs font-medium px-2.5 py-0.5 rounded-full"
                   >
                     {tag}
                   </span>
                 ))}
+              </div>
+            )}
+
+            {/* Title */}
+            <header>
+              <h2 className="text-xl font-bold text-[var(--color-font)] group-hover:text-primary transition-colors duration-200 leading-snug line-clamp-2">
+                {cardInfo.title}
+              </h2>
+            </header>
+
+            {/* Description */}
+            <section className="mt-2 text-muted-foreground text-sm leading-relaxed line-clamp-2 prose-sm prose max-w-none">
+              {parse(cardInfo.description)}
+            </section>
+
+            {/* Footer */}
+            <footer className="mt-4 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 min-w-0">
+                {user.profilePicture ? (
+                  <Image
+                    src={user.profilePicture}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    width={28}
+                    height={28}
+                    className="rounded-full shrink-0 ring-1 ring-border"
+                  />
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-primary/20 shrink-0 flex items-center justify-center text-primary text-xs font-bold">
+                    {user.firstName?.[0] ?? "?"}
+                  </div>
+                )}
+                <span className="text-sm font-medium text-[var(--color-font)] truncate">
+                  {user.firstName} {user.lastName}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0 text-xs text-muted-foreground">
+                <time dateTime={cardInfo.date}>{formattedDate}</time>
+                <span className="hidden sm:inline">·</span>
+                <span className="hidden sm:inline">{readTime} min read</span>
               </div>
             </footer>
           </div>
