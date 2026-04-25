@@ -64,9 +64,10 @@ export const createArticle = async function (
     const articlesCollection = await getCollection<ArticleDocument>("articles");
     await articlesCollection.insertOne(articleInfo as ArticleDocument);
     revalidatePath("/");
+    revalidatePath(`/article/${link}`);
   } catch {
     return { error: "Failed to publish article. Please try again." };
   }
 
-  redirect("/");
+  redirect(`/article/${link}`);
 };

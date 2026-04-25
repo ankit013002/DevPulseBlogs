@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const author = await getUserInformationById(article.userId);
   const description = article.description.replace(/<[^>]+>/g, " ").trim().slice(0, 160);
+  const authorName = author ? `${author.firstName} ${author.lastName}` : article.author;
 
   return {
     title: `${article.title} — DevPulse`,
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "article",
       publishedTime: article.date,
       modifiedTime: article.updatedAt,
-      authors: author ? [`${author.firstName} ${author.lastName}`] : [],
+      authors: authorName ? [authorName] : [],
       tags: article.tags,
     },
     twitter: {
@@ -53,18 +54,17 @@ export default async function ArticlePage({ params }: PageProps) {
 
   const articleCoverImage = await getBase64Image(article.coverImage);
   const user = await getUserInformationById(article.userId);
-  if (!user) notFound();
 
   const currUserCookie = await getUserFromCookie();
   const currUser = currUserCookie
     ? await getUserInformationById(currUserCookie.userId)
     : null;
-  const profilePicture = await getBase64Image(user.profilePicture);
+  const profilePicture = user ? await getBase64Image(user.profilePicture) : null;
   const isLikedArticle = currUser
     ? currUser.likedArticles.includes(article.link)
     : false;
 
-  const isAuthor = currUser && currUser._id!.toString() === user._id!.toString();
+  const isAuthor = currUser && user && currUser._id!.toString() === user._id!.toString();
 
   const wordCount = article.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length;
   const readTime = Math.max(1, Math.ceil(wordCount / 200));
@@ -112,30 +112,36 @@ export default async function ArticlePage({ params }: PageProps) {
 
         {/* Author + meta row */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8 pb-6 border-b border-border">
-          <Link
-            href={`/profile/${user.username}`}
-            className="flex items-center gap-3 group"
-          >
-            {profilePicture ? (
-              <Image
-                src={profilePicture}
-                alt={`${user.firstName} ${user.lastName}`}
-                width={44}
-                height={44}
-                className="rounded-full ring-2 ring-border group-hover:ring-primary/40 transition-all"
-              />
-            ) : (
-              <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                {user.firstName?.[0] ?? "?"}
+          {user ? (
+            <Link href={`/profile/${user.username}`} className="flex items-center gap-3 group">
+              {profilePicture ? (
+                <Image
+                  src={profilePicture}
+                  alt={`${user.firstName} ${user.lastName}`}
+                  width={44}
+                  height={44}
+                  className="rounded-full ring-2 ring-border group-hover:ring-primary/40 transition-all"
+                />
+              ) : (
+                <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                  {user.firstName?.[0] ?? "?"}
+                </div>
+              )}
+              <div>
+                <p className="font-semibold text-[var(--color-font)] group-hover:text-primary transition-colors text-sm">
+                  {user.firstName} {user.lastName}
+                </p>
+                <p className="text-xs text-muted-foreground">@{user.username}</p>
               </div>
-            )}
-            <div>
-              <p className="font-semibold text-[var(--color-font)] group-hover:text-primary transition-colors text-sm">
-                {user.firstName} {user.lastName}
-              </p>
-              <p className="text-xs text-muted-foreground">@{user.username}</p>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">?</div>
+              <div>
+                <p className="font-semibold text-[var(--color-font)] text-sm">{article.author || "Unknown Author"}</p>
+              </div>
             </div>
-          </Link>
+          )}
 
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <time dateTime={article.date}>
@@ -171,35 +177,37 @@ export default async function ArticlePage({ params }: PageProps) {
         </section>
 
         {/* Bottom author card */}
-        <div className="mt-12 pt-8 border-t border-border">
-          <Link
-            href={`/profile/${user.username}`}
-            className="flex items-center gap-4 group p-4 rounded-2xl hover:bg-accent transition-colors"
-          >
-            {profilePicture ? (
-              <Image
-                src={profilePicture}
-                alt={`${user.firstName} ${user.lastName}`}
-                width={56}
-                height={56}
-                className="rounded-full ring-2 ring-border"
-              />
-            ) : (
-              <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xl">
-                {user.firstName?.[0] ?? "?"}
-              </div>
-            )}
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-0.5">Written by</p>
-              <p className="font-bold text-[var(--color-font)] group-hover:text-primary transition-colors">
-                {user.firstName} {user.lastName}
-              </p>
-              {user.bio && (
-                <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{user.bio}</p>
+        {user && (
+          <div className="mt-12 pt-8 border-t border-border">
+            <Link
+              href={`/profile/${user.username}`}
+              className="flex items-center gap-4 group p-4 rounded-2xl hover:bg-accent transition-colors"
+            >
+              {profilePicture ? (
+                <Image
+                  src={profilePicture}
+                  alt={`${user.firstName} ${user.lastName}`}
+                  width={56}
+                  height={56}
+                  className="rounded-full ring-2 ring-border"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xl">
+                  {user.firstName?.[0] ?? "?"}
+                </div>
               )}
-            </div>
-          </Link>
-        </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-0.5">Written by</p>
+                <p className="font-bold text-[var(--color-font)] group-hover:text-primary transition-colors">
+                  {user.firstName} {user.lastName}
+                </p>
+                {user.bio && (
+                  <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{user.bio}</p>
+                )}
+              </div>
+            </Link>
+          </div>
+        )}
       </article>
     </div>
   );
